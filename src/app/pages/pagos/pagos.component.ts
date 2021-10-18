@@ -14,7 +14,7 @@ export class PagosComponent implements OnInit {
   userList = [];
   cargando = false;
   breadCrumbItems: Array<{}>;
-  dtOptions: DataTables.Settings = {};
+  dtOptions: any = {};
   dtTrigger: Subject<any> = new Subject<any>();
   year: any = new Date().getFullYear();
   selectMonth: any = (new Date().getMonth() + 1);
@@ -58,7 +58,14 @@ export class PagosComponent implements OnInit {
           sortAscending: ": Activar para ordenar la tabla en orden ascendente",
           sortDescending: ": Activar para ordenar la tabla en orden descendente"
         }
-      }
+      },
+      dom: 'Bfrtip',
+      buttons: [
+        'copy',
+        'print',
+        'excel',
+        'pdf'
+      ]
     };
   }
   async getUsers(role) {
@@ -92,7 +99,7 @@ export class PagosComponent implements OnInit {
             amountCallsMade: 0,
             referralAmount: 0,
             totalAmount: 0,
-            userStatusPay: ((userPay.indexOf(this.yearMonth) > -1) ? true : false),
+            userStatusPay: ((userPay.indexOf(this.yearMonthSelect) > -1) ? true : false),
             userPay: userPay
           }
           // this.cargando = false;
@@ -101,7 +108,7 @@ export class PagosComponent implements OnInit {
         //this.userList = this.userList.filter(function(n){ return n != undefined });
 
         this.userList.forEach((element) => {
-          this.fbstore.collection('calls', ref => ref.where('inmpId', '==', element.userId)).snapshotChanges()
+          this.fbstore.collection('calls', ref => ref.where('speId', '==', element.userId)).snapshotChanges()
           .subscribe(doc => {
             let numberCalls = 0;
             let minutes: number = 0;
@@ -189,7 +196,7 @@ export class PagosComponent implements OnInit {
     }).then((result) => {
       /* Read more about isConfirmed, isDenied below */
       if (result.isConfirmed) {
-        pay.push(this.yearMonth);
+        pay.push(this.yearMonthSelect);
         this.fbstore.collection('perfiles').doc(id).update({userPay: pay}).then(() => {
           console.log("Status actualizado");
         });
@@ -203,7 +210,7 @@ export class PagosComponent implements OnInit {
     const httpOptions = {
       headers: new HttpHeaders({
         'Content-Type':  'application/json',
-        'Authorization': 'Basic ' + btoa('AC22ae1dad8bd832a2ecd25b28742feddc:84e565cb348fe86545ebfd53617bb4ca')
+        'Authorization': 'Basic ' + btoa('AC22ae1dad8bd832a2ecd25b28742feddc:f59fe5f034ce4cac5ebc6aebe9d3aad2')
       })
     }
     return this.http.get(url, httpOptions);

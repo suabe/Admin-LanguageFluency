@@ -16,7 +16,7 @@ export class SoporteComponent implements OnInit {
   supportList = [];
   cargando = false;
   breadCrumbItems: Array<{}>;
-  dtOptions: DataTables.Settings = {};
+  dtOptions: any = {};
   dtTrigger: Subject<any> = new Subject<any>();
   response: string = "";
   constructor(
@@ -54,7 +54,14 @@ export class SoporteComponent implements OnInit {
           sortAscending: ": Activar para ordenar la tabla en orden ascendente",
           sortDescending: ": Activar para ordenar la tabla en orden descendente"
         }
-      }
+      },
+      dom: 'Bfrtip',
+      buttons: [
+        'copy',
+        'print',
+        'excel',
+        'pdf'
+      ]
     };
   }
 

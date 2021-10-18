@@ -49,8 +49,8 @@
                     <th>Options</th>
                     <!--<th>Activate</th>
                     <th>Suspend</th>
-                    <th>Cancel</th>
-										<th>Details</th>-->
+                    <th>Cancel</th>-->
+										<th>Details</th>
 									</tr>
 								</thead>
 								<tbody *ngIf="!cargando">
@@ -76,12 +76,12 @@
                         class="fas fa-minus"></i> Suspend</button></td>
                     <td><button *ngIf="user.userStatus=='suspended'||user.userStatus=='active'" (click)="changeStatus('canceled', user.userId)" type="button" class="btn btn-danger"><i
                         class="fas fa-times-circle"></i> Cancel</button></td>-->
-										<!--<td>
+										<td>
 											<div class="button-items">
 												<button [routerLink]="['/potential',user.userId]" type="button" class="btn btn-primary"><i
 														class="fas fa-eye"></i></button>
 											</div>
-										</td>-->
+										</td>
 									</tr>
 								</tbody>
 							</table>

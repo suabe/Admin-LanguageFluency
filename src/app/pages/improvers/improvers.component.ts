@@ -12,7 +12,7 @@ export class ImproversComponent implements OnInit {
   userList = [];
   cargando = false;
   breadCrumbItems: Array<{}>;
-  dtOptions: DataTables.Settings = {};
+  dtOptions: any = {};
   dtTrigger: Subject<any> = new Subject<any>();
   constructor(
     private fbstore: AngularFirestore,
@@ -48,7 +48,14 @@ export class ImproversComponent implements OnInit {
           sortAscending: ": Activar para ordenar la tabla en orden ascendente",
           sortDescending: ": Activar para ordenar la tabla en orden descendente"
         }
-      }
+      },
+      dom: 'Bfrtip',
+      buttons: [
+        'copy',
+        'print',
+        'excel',
+        'pdf'
+      ]
     };
   }
 

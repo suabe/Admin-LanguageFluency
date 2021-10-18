@@ -12,4 +12,10 @@ export interface DetalleUsuario {
   phone?: string;
   role?: string;
   spei?: string;
+  idioma?: Array<Idiomas>;
+  country?: string;
+}
+
+export interface Idiomas {
+  idioma: string
 }

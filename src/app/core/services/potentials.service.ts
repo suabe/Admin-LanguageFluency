@@ -29,7 +29,8 @@ export class PotentialsService {
             gender: result.payload.doc.data()['gender'],
             mtoken: result.payload.doc.data()['mtoken'],
             phone: result.payload.doc.data()['phone'],
-            spei: result.payload.doc.data()['spei']
+            spei: result.payload.doc.data()['spei'],
+            idioma: result.payload.doc.data()['idioma']
           };
         });
       })

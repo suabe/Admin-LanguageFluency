@@ -16,7 +16,7 @@ export class FacturasComponent implements OnInit {
   invoiceList = [];
   cargando = false;
   breadCrumbItems: Array<{}>;
-  dtOptions: DataTables.Settings = {};
+  dtOptions: any = {};
   dtTrigger: Subject<any> = new Subject<any>();
   base64: any;
   ifInvoice: boolean = false;
@@ -55,7 +55,14 @@ export class FacturasComponent implements OnInit {
           sortAscending: ": Activar para ordenar la tabla en orden ascendente",
           sortDescending: ": Activar para ordenar la tabla en orden descendente"
         }
-      }
+      },
+      dom: 'Bfrtip',
+      buttons: [
+        'copy',
+        'print',
+        'excel',
+        'pdf'
+      ]
     };
   }
 
