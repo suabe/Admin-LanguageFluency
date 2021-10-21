@@ -84,7 +84,8 @@ export class SoporteComponent implements OnInit {
             supportMessage: result.payload.doc.data()['message'],
             supportStatus: result.payload.doc.data()['status'],
             supportResponse: result.payload.doc.data()['response'],
-            creationTime: (isNumeric(result.payload.doc.data()['creationTime'])) ? result.payload.doc.data()['creationTime']: result.payload.doc.data()['creationTime'].toDate()
+            creationTime: result.payload.doc.data()['creationTime']
+            //creationTime: (isNumeric(result.payload.doc.data()['creationTime'])) ? result.payload.doc.data()['creationTime']: result.payload.doc.data()['creationTime'].toDate()
           }
           // this.cargando = false;
         });

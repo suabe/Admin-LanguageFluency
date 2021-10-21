@@ -85,7 +85,8 @@ export class FacturasComponent implements OnInit {
             invoiceMessage: result.payload.doc.data()['message'],
             invoiceTaxData: result.payload.doc.data()['taxData']/*.join("<br>")*/,
             invoiceStatus: result.payload.doc.data()['status'],
-            creationTime: (isNumeric(result.payload.doc.data()['creationTime'])) ? result.payload.doc.data()['creationTime']: result.payload.doc.data()['creationTime'].toDate()
+            creationTime: result.payload.doc.data()['creationTime']
+            //creationTime: (isNumeric(result.payload.doc.data()['creationTime'])) ? result.payload.doc.data()['creationTime']: result.payload.doc.data()['creationTime'].toDate()
           }
           // this.cargando = false;
         });
