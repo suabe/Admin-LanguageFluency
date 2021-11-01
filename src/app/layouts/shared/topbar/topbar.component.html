@@ -26,7 +26,24 @@
         (click)="toggleMobileMenu($event)">
         <i class="ri-menu-2-line align-middle"></i>
       </button>
-
+      <button *ngIf="isTimer && !timeIsUp" mat-button color="primary" (click)="onStopTimer()"
+              matBadgePosition="after" matBadgeColor="accent">
+        Stop timer {{timerCount}}
+      </button>
+    <!-- <button class="btn btn-lg btn-outline-primary" (click)="openModal(timeUp)">Launch demo modal</button> -->
+    <ng-template #timeUp role="document" let-modal >
+      <div class="modal-header">
+        <h5 class="modal-title mt-0">Se cerrara la session por in actividad</h5>
+        <button type="button" class="close" aria-hidden="true" (click)="modal.dismiss('Cross click')">×</button>
+      </div>
+      <div class="modal-body">
+        <h5>La sesion se cerrara {{timerCount}}</h5>        
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-light" (click)="modal.close('Close click')">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div>
+    </ng-template>
       <!-- App Search-->
       <!-- <form class="app-search d-none d-lg-block">
         <div class="position-relative">

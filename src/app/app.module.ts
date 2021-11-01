@@ -23,6 +23,7 @@ import { AngularFireAuthModule } from '@angular/fire/auth';
 import { AngularFireDatabaseModule } from '@angular/fire/database';
 import { AngularFirestoreModule } from '@angular/fire/firestore';
 import { DataTablesModule } from 'angular-datatables';
+import { UserIdleModule } from 'angular-user-idle'
 
 import localeEs from '@angular/common/locales/es-MX';
 import { registerLocaleData } from '@angular/common';
@@ -61,6 +62,7 @@ export function createTranslateLoader(http: HttpClient): any {
         deps: [HttpClient]
       }
     }),
+    UserIdleModule.forRoot({idle: 5, timeout: 60, ping: 120})
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
