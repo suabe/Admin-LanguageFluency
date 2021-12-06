@@ -4,6 +4,7 @@ import { Subject } from 'rxjs';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { AddAdminComponent } from '../add-admin/add-admin.component';
 import { UserProfileService } from '../../core/services/user.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-administrators',
@@ -11,7 +12,9 @@ import { UserProfileService } from '../../core/services/user.service';
   styleUrls: ['./administrators.component.scss']
 })
 export class AdministratorsComponent implements OnInit {
+  usuarioLogeado;
   userList = [];
+  verified = false;
   cargando = false;
   breadCrumbItems: Array<{}>;
   dtOptions: any = {};
@@ -54,12 +57,17 @@ export class AdministratorsComponent implements OnInit {
         }
       },
       dom: 'Bfrtip',
+      scrollX: true,
       buttons: [
-        'copy',
-        'print',
-        'excel',
-        'pdf'
-      ]
+        {
+            extend: 'excelHtml5',
+            title: 'Reporte general de administradores'
+        },
+        {
+          extend: 'copyHtml5',
+          title: 'Reporte general de administradores'
+        }
+      ],
     };
   }
 
@@ -98,9 +106,71 @@ export class AdministratorsComponent implements OnInit {
   }
 
   changeStatus(status: string, id: string){
-    this.fbstore.collection('perfiles').doc(id).update({status: status}).then(() => {
-      console.log("Status actualizado");
-    });
+    this.usuarioLogeado = JSON.parse(sessionStorage.getItem('authUser'));
+    var estado = "";
+    if(status == 'canceled'){
+      estado = "Cancelar"
+    }
+    else if(status == 'suspended'){
+      estado = "Suspender"
+    }
+    else if(status == 'active'){
+      estado = "Activar"
+    }
+    Swal.fire({
+      title: estado,
+      text: '¿Está seguro que quiere '+estado+' este administrador?',
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Sí, '+estado,
+      cancelButtonText: 'No, aún no',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        Swal.fire({
+          title: "Confirme su contraseña para continuar",
+          input:'password',
+          inputPlaceholder: 'Ingrese su contraseña',
+          icon: 'info',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: 'Continuar',
+          cancelButtonText: 'Cancelar'
+        }).then((inputValue) => {
+          if (inputValue.value) {
+            var corecto = false;
+            this.fbstore.collection('perfiles').doc(this.usuarioLogeado.uid).ref.get().then(function (doc) {
+              if (doc.exists) {
+                if (doc.data()['password'] == inputValue.value) {
+                  corecto = true;
+                }
+              } 
+              else {
+                Swal.fire({
+                  icon: 'error',
+                  title: 'Lo sentimos...',
+                  text: 'Hubo un error. Intentelo más tarde',
+                })
+              }
+            }).then(()=>{
+              if(corecto == true){
+                this.fbstore.collection('perfiles').doc(id).ref.update({status: status}).then(() => {
+                  console.log("Status actualizado");
+                });
+              }
+              else{
+                Swal.fire({
+                  icon: 'error',
+                  title: 'Lo sentimos...',
+                  text: 'La contraseña es incorrecta',
+                })
+              }
+            })
+          }
+        })
+      }
+    })
   }
-
 }

@@ -57,11 +57,30 @@ export class PotentialsComponent implements OnInit {
         }
       },
       dom: 'Bfrtip',
+      scrollX: true,
       buttons: [
-        'copy',
-        'print',
-        'excel',
-        'pdf'
+        {
+            extend: 'excelHtml5',
+            title: 'Reporte general potenciales'
+        },
+        {
+          extend: 'copyHtml5',
+          title: 'Reporte general potenciales'
+        }
+      ],
+      columnDefs: [
+        {
+          visible: false,
+          targets: [5]
+        },
+        {
+          visible: false,
+          targets: [7]
+        },
+        {
+          visible: false,
+          targets: [10]
+        }
       ]
     };
   }
@@ -87,7 +106,7 @@ export class PotentialsComponent implements OnInit {
 
           let birthday = +birthDate;
           birthday = ~~((today - birthday) / (31557600000));
-
+          let bday = new Date(birthDate).toLocaleDateString();
           return {
             userId: result.payload.doc.id,
             userName: result.payload.doc.data()['name'],
@@ -98,7 +117,10 @@ export class PotentialsComponent implements OnInit {
             userCountry: result.payload.doc.data()['country'],
             userLanguage: result.payload.doc.data()['idioma'],
             userBirthDate: birthday,
-            userStatus: result.payload.doc.data()['status']
+            userStatus: result.payload.doc.data()['status'],
+            userDayOfBirth: bday,
+            userPhone: result.payload.doc.data()['phone'],
+            userCreatedAt:  result.payload.doc.data()['creado'].toDate().toLocaleString('en-US')
           }
           // this.cargando = false;
         });

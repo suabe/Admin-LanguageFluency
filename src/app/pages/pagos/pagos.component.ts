@@ -13,6 +13,9 @@ import Swal from 'sweetalert2';
 export class PagosComponent implements OnInit {
   userList = [];
   cargando = false;
+  usuarioLogeado;
+  getMonths = [];
+  collectGetmonths:Array<{}>;
   breadCrumbItems: Array<{}>;
   dtOptions: any = {};
   dtTrigger: Subject<any> = new Subject<any>();
@@ -25,13 +28,13 @@ export class PagosComponent implements OnInit {
 
   constructor(
     private fbstore: AngularFirestore,
-    private http: HttpClient,
-    public userService: UserProfileService
+    public userService: UserProfileService,
+    private http: HttpClient    
   ) { }
 
   ngOnInit(): void {
     this.userService.applyPermissions();
-    this.breadCrumbItems = [{ label: 'Language Fluency' }, { label: 'Speakers', active: true }];
+    this.breadCrumbItems = [{ label: 'Language Fluency' }, { label: 'Pagos', active: true }];
     this.getUsers('conversador');
     this.dtOptions = {
       pagingType: 'full_numbers',
@@ -61,12 +64,28 @@ export class PagosComponent implements OnInit {
       },
       dom: 'Bfrtip',
       buttons: [
-        'copy',
-        'print',
-        'excel',
-        'pdf'
+        {
+            extend: 'excelHtml5',
+            title: 'Reporte general speakers'
+        },
+        {
+          extend: 'copyHtml5',
+          title: 'Reporte general speakers'
+        }
       ]
     };
+    var limitMonth = new Date().getMonth();
+    var limitYear = new Date().getFullYear();
+    var meses = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+    var mesesSelected = ""
+    for (let index = 0; index <= limitMonth; index++) {
+      var fechaOutPut = '1/'+limitMonth+'/'+limitYear;
+      if(index == limitMonth){
+        mesesSelected = "selected";
+      }
+      this.getMonths.push({mes:meses[index],fecha:fechaOutPut,selectMonth:mesesSelected,year:limitYear});
+    }
+    this.collectGetmonths = this.getMonths;
   }
   async getUsers(role) {
     try {
@@ -78,13 +97,10 @@ export class PagosComponent implements OnInit {
           let today: any = new Date();
           let birthDate = new Date(new Date(result.payload.doc.data()['birthDtate']).toLocaleString('en-US'));
           let userPay = (result.payload.doc.data()['userPay'] === undefined) ? [] : result.payload.doc.data()['userPay'];
-
           //let birthDateF = Math.floor((today - new Date(birthDate).getTime()) / 3.15576e+10);
           //console.log(birthDateF);
-
           let birthday = +birthDate;
           birthday = ~~((today - birthday) / (31557600000));
-
           return {
             userId: result.payload.doc.id,
             userName: result.payload.doc.data()['name'],
@@ -120,7 +136,6 @@ export class PagosComponent implements OnInit {
                 let callMonth = (new Date(data2['date_created']).getMonth() + 1);
                 let callYear = new Date(data2['date_created']).getFullYear();
                 //console.log(callMonth, callYear, this.selectMonth, this.selectYear);
-
                 if (this.selectMonth == callMonth && this.selectYear == callYear) {
                   numberCalls++;
                   element.amountCallsMade = numberCalls * 15;
@@ -137,18 +152,15 @@ export class PagosComponent implements OnInit {
             });
 
           });
-        });
-
+        });        
         // this.cargando = false;
         this.dtTrigger.next();
         setTimeout(() => {
           this.cargando = false;
         }, 2000);
       });
-
     } catch (error) {
       console.log(error.message);
-
     }
   }
 
@@ -184,6 +196,7 @@ export class PagosComponent implements OnInit {
   }
 
   changeStatus(pay: any, id: string){
+    this.usuarioLogeado = JSON.parse(sessionStorage.getItem('authUser'));
     console.log(pay);
     Swal.fire({
       title: '¿Quieres marcar el mes actual como pagado de este usuario?',
@@ -194,23 +207,61 @@ export class PagosComponent implements OnInit {
       cancelButtonText: 'No, aún no',
       cancelButtonColor: '#d33',
     }).then((result) => {
-      /* Read more about isConfirmed, isDenied below */
       if (result.isConfirmed) {
-        pay.push(this.yearMonthSelect);
-        this.fbstore.collection('perfiles').doc(id).update({userPay: pay}).then(() => {
-          console.log("Status actualizado");
-        });
+        Swal.fire({
+          title: "Confirme su contraseña para continuar",
+          input:'password',
+          inputPlaceholder: 'Ingrese su contraseña',
+          icon: 'info',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: 'Continuar',
+          cancelButtonText: 'Cancelar'
+        }).then((inputValue)=>{
+          if (inputValue.value) {
+            var corecto = false;
+            this.fbstore.collection('perfiles').doc(this.usuarioLogeado.uid).ref.get().then(function (doc) {
+              if (doc.exists) {
+                if (doc.data()['password'] == inputValue.value) {
+                  corecto = true;
+                }
+              } 
+              else {
+                Swal.fire({
+                  icon: 'error',
+                  title: 'Lo sentimos...',
+                  text: 'Hubo un error. Intentelo más tarde',
+                })
+              }
+            }).then(()=>{
+              if(corecto == true){
+                pay.push(this.yearMonthSelect);
+                this.fbstore.collection('perfiles').doc(id).update({userPay: pay}).then(() => {
+                  console.log("Status actualizado");
+                });
+              }
+              else{
+                Swal.fire({
+                  icon: 'error',
+                  title: 'Lo sentimos...',
+                  text: 'La contraseña es incorrecta',
+                })
+              }
+            })
+          }
+        })
       }
     });
   }
 
   getInfoTwilio(uri){
-    var url = 'https://api.twilio.com/2010-04-01/Accounts/AC22ae1dad8bd832a2ecd25b28742feddc/Calls/'+uri+'.json';
+    var url = 'https://api.twilio.com/2010-04-01/Accounts/9aa31c2d0d5d07a9ff66af0b2be1e969/Calls/'+uri+'.json';
 
     const httpOptions = {
       headers: new HttpHeaders({
         'Content-Type':  'application/json',
-        'Authorization': 'Basic ' + btoa('AC22ae1dad8bd832a2ecd25b28742feddc:f59fe5f034ce4cac5ebc6aebe9d3aad2')
+        'Authorization': 'Basic ' + btoa('9aa31c2d0d5d07a9ff66af0b2be1e969:f59fe5f034ce4cac5ebc6aebe9d3aad2')
       })
     }
     return this.http.get(url, httpOptions);

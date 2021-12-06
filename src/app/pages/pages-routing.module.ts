@@ -16,6 +16,7 @@ import { MetricasComponent } from './metricas/metricas.component';
 import { ChartjsComponent } from './chart/chartjs/chartjs.component';
 import { PotentialsComponent } from './potentials/potentials.component';
 import { PotentialComponent } from './potential/potential.component';
+import { NotificationsComponent } from './notifications/notifications.component';
 
 const routes: Routes = [
     { path: '', component: HomeComponent },
@@ -31,7 +32,8 @@ const routes: Routes = [
     { path: 'soporte', component: SoporteComponent },
     { path: 'chart', component: ChartjsComponent },
     { path: 'potentials', component: PotentialsComponent },
-    { path: 'potential/:id', component:  PotentialComponent }
+    { path: 'potential/:id', component:  PotentialComponent },
+    { path: 'notifications', component: NotificationsComponent}
 ];
 
 @NgModule({

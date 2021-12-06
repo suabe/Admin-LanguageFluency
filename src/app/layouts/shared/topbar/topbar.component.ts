@@ -7,13 +7,6 @@ import { AuthenticationService } from '../../../core/services/auth.service';
 import { AuthfakeauthenticationService } from '../../../core/services/authfake.service';
 import { LanguageService } from '../../../core/services/language.service';
 import { environment } from '../../../../environments/environment';
-import { UserIdleService } from 'angular-user-idle';
-
-import Swal from 'sweetalert2';
-import { Subscription } from 'rxjs';
-import { tap } from 'rxjs/operators';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { fromPromise } from 'rxjs/internal-compatibility';
 
 @Component({
   selector: 'app-topbar',
@@ -38,22 +31,11 @@ export class TopbarComponent implements OnInit {
     { text: 'Russian', flag: 'assets/images/flags/russia.jpg', lang: 'ru' },
   ];
 
-  private timerStartSubscription: Subscription;
-  private timeoutSubscription: Subscription;
-  private pingSubscription: Subscription;
   // tslint:disable-next-line: max-line-length
-  constructor(@Inject(DOCUMENT) private document: any, private router: Router, private authService: AuthenticationService, private authFackservice: AuthfakeauthenticationService, public languageService: LanguageService, public cookiesService: CookieService, private userIdle: UserIdleService,private modalService: NgbModal) { }
+  constructor(@Inject(DOCUMENT) private document: any, private router: Router, private authService: AuthenticationService, private authFackservice: AuthfakeauthenticationService, public languageService: LanguageService, public cookiesService: CookieService) { }
 
   @Output() mobileMenuButtonClicked = new EventEmitter();
   @Output() settingsButtonClicked = new EventEmitter();
-  idle: number;
-  timeout: number;
-  ping: number;
-  lastPing: string;
-  isWatching: boolean;
-  isTimer: boolean;
-  timeIsUp: boolean;
-  timerCount: number;
 
   ngOnInit(): void {
     this.element = document.documentElement;
@@ -73,50 +55,6 @@ export class TopbarComponent implements OnInit {
     this.user = JSON.parse(sessionStorage.getItem('authUser'));
     console.log(this.user);
 
-    this.onStartWatching()
-  
-  }
-
-  openModal() {
-    //this.modalService.open(content);
-    Swal.fire({
-      title: '¿Quieres aprobar este usuario potencial?',
-      text: 'Pasará a ser un Speaker',
-      icon: 'question',
-      showCancelButton: true,
-      confirmButtonText: 'Sí, aprobar',
-      cancelButtonText: 'No, aún no',
-      cancelButtonColor: '#d33',
-    }).then((result) => {
-      /* Read more about isConfirmed, isDenied below */
-      if (result.isConfirmed) {
-        
-      }
-    });
-  }
-
-  onStartWatching() {
-    
-    // Start watching for user inactivity.
-    this.userIdle.startWatching();
-    
-    // Start watching when user idle is starting.
-    this.timerStartSubscription = this.userIdle.onTimerStart()
-      .pipe(tap(() => this.isTimer = true))
-      .subscribe(count => this.timerCount = count);
-
-    // Start watch when time is up.
-    this.timeoutSubscription = this.userIdle.onTimeout()
-      .subscribe(() => this.timeIsUp = true);
-
-    this.pingSubscription = this.userIdle.ping$
-      .subscribe(value => this.lastPing = `#${value} at ${new Date().toString()}`);
-  }
-
-  onStopTimer() {
-    this.userIdle.resetTimer();
-    this.isTimer = false;
-    this.timeIsUp = false;
   }
 
   /**

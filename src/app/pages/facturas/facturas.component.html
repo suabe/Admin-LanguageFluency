@@ -44,10 +44,11 @@
                                     <td><div [innerHTML]="invoice.invoiceTaxData"></div></td>
                                     <td>{{ invoice.creationTime | date: 'dd/MM/yyyy hh:mm:ss a' }}</td>
                                     <td *ngIf="invoice.invoiceStatus=='sended'" style="color: #1cbb8c;">{{ invoice.invoiceStatus == 'sended' ? 'Enviado' : 'Pendiente' }}</td>
-                                    <td *ngIf="invoice.invoiceStatus=='pending'" style="color: #fcb92c;">{{ invoice.invoiceStatus == 'sended' ? 'Enviado' : 'Pendiente' }}</td>
+                                    <td *ngIf="invoice.invoiceStatus=='pending'" style="color: #fcb92c;">{{ invoice.invoiceStatus == 'pending' ? 'Pendiente' : 'Pendiente' }}</td>
                                     <td class="d-flex">
-                                      <input type="file" accept="application/pdf" name="file" id="file" class="form-control" (change)="onFileSelected($event)">
-                                      <button *ngIf="ifInvoice" type="button" class="btn btn-success ml-2" (click)="sendInvoice(invoice.invoiceId, invoice.invoiceFrom)"><i class="fas fa-check"></i> Enviar factura</button>
+                                        <input *ngIf="invoice.invoiceStatus=='pending'" type="file" accept="application/pdf" name="file" id="file" class="form-control" (change)="onFileSelected($event,invoice.invoiceId)">
+                                        <a *ngIf="invoice.invoiceStatus=='sended'" target="_blank" href="{{invoice.invoiceUrl}}" class="btn btn-primary"><i class="fas fa-eye"></i></a>
+                                        <button *ngIf="ifInvoiceBtn == invoice.invoiceId && ifInvoice == true" type="button" class="btn btn-success ml-2" (click)="sendInvoice(invoice.invoiceId, invoice.invoiceFrom)"><i class="fas fa-check"></i> Enviar factura</button>
                                     </td>
                                 </tr>
                             </tbody>

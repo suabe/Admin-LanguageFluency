@@ -7,7 +7,7 @@ import { WidgetModule } from '../shared/widget/widget.module';
 
 import { PagesRoutingModule } from './pages-routing.module';
 
-import { NgbNavModule, NgbDropdownModule, NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap';
+import { NgbNavModule, NgbDropdownModule, NgbTooltipModule, NgbAlertModule } from '@ng-bootstrap/ng-bootstrap';
 import { NgApexchartsModule } from 'ng-apexcharts';
 import { Ng2SearchPipeModule } from 'ng2-search-filter';
 import { NgxEchartsModule } from 'ngx-echarts';
@@ -48,6 +48,10 @@ import { PotentialsComponent } from './potentials/potentials.component';
 import { PotentialComponent } from './potential/potential.component';
 import { AddPotentialComponent } from './add-potential/add-potential.component';
 import * as echarts from 'echarts';
+import { NotificationsPipe } from './notifications.pipe';
+import { NotificationsComponent } from './notifications/notifications.component';
+import { AddNotificationComponent } from './add-notification/add-notification.component';
+import { ResponseSupportComponent } from './response-support/response-support.component';
 
 const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
   suppressScrollX: true,
@@ -55,7 +59,7 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
 };
 
 @NgModule({
-  declarations: [DashboardComponent, CalendarComponent, ChatComponent, KanbanComponent, HomeComponent, ImproversComponent, SpeakersComponent, ImproverComponent, AdministratorsComponent, BannersComponent, PagosComponent, FacturasComponent, SoporteComponent, MetricasComponent, SpeakerComponent, AddAdminComponent, AddBannerComponent, PotentialsComponent, PotentialComponent, AddPotentialComponent],
+  declarations: [DashboardComponent, CalendarComponent, ChatComponent, KanbanComponent, HomeComponent, ImproversComponent, SpeakersComponent, ImproverComponent, AdministratorsComponent, BannersComponent, PagosComponent, FacturasComponent, SoporteComponent, MetricasComponent, SpeakerComponent, AddAdminComponent, AddBannerComponent, PotentialsComponent, PotentialComponent, AddPotentialComponent, NotificationsPipe, NotificationsComponent, AddNotificationComponent, ResponseSupportComponent],
   imports: [
     CommonModule,
     FormsModule,
@@ -65,6 +69,7 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
     UIModule,
     Ng2SearchPipeModule,
     NgbNavModule,
+    NgbAlertModule,
     NgbDropdownModule,
     NgbTooltipModule,
     NgApexchartsModule,

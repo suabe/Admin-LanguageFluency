@@ -26,11 +26,12 @@
                         <p>Por favor espere...</p>
                     </div>
                     <div>
-                        <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="row-border hover">
+                        <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="row-border hover table-responsive">
                             <thead>
                                 <tr>
-                                    <th>Mensaje</th>
-                                    <th>De</th>
+                                    <th>Asunto</th>
+                                    <th>Nombre</th>
+                                    <th>Email</th>
                                     <th>Fecha</th>
                                     <th>Status</th>
                                     <th>Respuesta</th>
@@ -38,16 +39,15 @@
                             </thead>
                             <tbody *ngIf="!cargando">
                                 <tr *ngFor="let support of supportList; let i = index">
-                                    <td>{{ support.supportMessage }}</td>
+                                    <td>{{ support.subjecttMessage }}</td>
+                                    <td>{{ support.supportName }}</td>
                                     <td>{{ support.supportFrom }}</td>
                                     <td>{{ support.creationTime | date: 'dd/MM/yyyy hh:mm:ss a' }}</td>
                                     <td *ngIf="support.supportStatus=='answered'" style="color: #1cbb8c;">{{ support.supportStatus == 'answered' ? 'Respondido' : 'No respondido' }}</td>
                                     <td *ngIf="support.supportStatus=='notAnswered'" style="color: #fcb92c;">{{ support.supportStatus == 'answered' ? 'Respondido' : 'No respondido' }}</td>
-                                    <td class="d-flex" *ngIf="support.supportResponse==''||support.supportResponse===undefined">
-                                      <textarea placeholder="Escriba su respuesta" [(ngModel)]="response" rows="2" class="form-control"></textarea>
-                                      <button *ngIf="response != ''" type="button" class="btn btn-success ml-2" (click)="sendSupport(support.supportId, support.supportFrom)"><i class="fas fa-check"></i> Enviar respuesta</button>
+                                    <td>
+                                      <button type="button" class="btn btn-success ml-2" (click)="readSupport(support.supportId)"><i class="fas fa-check"></i> Ver</button>
                                     </td>
-                                    <td class="d-flex" *ngIf="support.supportResponse!=''&&support.supportResponse!==undefined">{{ support.supportResponse }}</td>
                                 </tr>
                             </tbody>
                         </table>

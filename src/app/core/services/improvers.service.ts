@@ -26,8 +26,16 @@ export class ImproversService {
   getImprover(id: string) {
     return this.afstore.collection('perfiles').doc(id).snapshotChanges();
   }
-
   getCalls(id: string) {
     return this.afstore.collection('calls', ref => ref.where('inmpId','==', id)).snapshotChanges();
+  }
+  getPlans(id: string) {
+    return this.afstore.collection('plans', ref => ref.where('uid','==', id)).snapshotChanges();
+  }
+  getReferidos(id: string) {
+    return this.afstore.collection('perfiles', ref => ref.where('idref','==', id)).snapshotChanges();
+  }
+  getPayments(id: string) {
+    return this.afstore.collection('pagos', ref => ref.where('uid','==', id)).snapshotChanges();
   }
 }

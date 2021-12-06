@@ -15,7 +15,7 @@ import { environment } from '../../../../environments/environment';
  * Reset-password component
  */
 export class PasswordresetComponent implements OnInit, AfterViewInit {
-
+  anio: number = new  Date().getFullYear();
   resetForm: FormGroup;
   submitted = false;
   error = '';

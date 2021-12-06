@@ -4,20 +4,20 @@
       <div class="col-6">
         <div class="card">
           <div class="card-header">
-            <h4>Speaker por pais</h4>
+            <h4>Speaker por país</h4>
           </div>
           <div class="card-body">
-            <div echarts [options]="pieChart" class="demo-chart"></div>
+            <div echarts [options]="speakerPerCountry" class="demo-chart"></div>
           </div>
         </div>
       </div>
       <div class="col-6">
         <div class="card">
           <div class="card-header">
-            <h4>Improver por pais</h4>
+            <h4>Improver por país</h4>
           </div>
           <div class="card-body">
-            <div echarts [options]="pieChart" class="demo-chart"></div>
+            <div echarts [options]="improverPerCountry" class="demo-chart"></div>
           </div>
         </div>
       </div>
@@ -39,7 +39,7 @@
             <h4>Nuevos Improver</h4>
           </div>
           <div class="card-body">
-            <div echarts [options]="newSpeaker" class="demo-chart"></div>
+            <div echarts [options]="newImprover" class="demo-chart"></div>
           </div>
         </div>
       </div>
@@ -51,7 +51,7 @@
             <h4>Speaker por idioma</h4>
           </div>
           <div class="card-body">
-            <div echarts [options]="userLanguage" class="demo-chart"></div>
+            <div echarts [options]="speakerLanguage" class="demo-chart"></div>
           </div>
         </div>
       </div>
@@ -61,7 +61,7 @@
             <h4>Improver por idioma</h4>
           </div>
           <div class="card-body">
-            <div echarts [options]="userLanguage" class="demo-chart"></div>
+            <div echarts [options]="improverLanguage" class="demo-chart"></div>
           </div>
         </div>
       </div>
@@ -73,7 +73,7 @@
             <h4>Nuevos por idioma</h4>
           </div>
           <div class="card-body">
-            <div echarts [options]="canceledLanguage" class="demo-chart"></div>
+            <div echarts [options]="newUserByLanguage" class="demo-chart"></div>
           </div>
         </div>
       </div>
@@ -83,7 +83,7 @@
             <h4>Cancelados por idioma</h4>
           </div>
           <div class="card-body">
-            <div echarts [options]="canceledLanguage" class="demo-chart"></div>
+            <div echarts [options]="cancelByLanguage" class="demo-chart"></div>
           </div>
         </div>
       </div>

@@ -1,0 +1,31 @@
+<form (ngSubmit)="responseSupport()" [formGroup]="responseSupportForm">
+    <div class="modal-header bg-dark text-light ">
+        <h4 class="modal-title text-light">Solicitud de Soporte</h4>
+        <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
+        <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <p>Enviado: {{supportMessage?.creationTime | date: 'dd/MM/yyyy hh:mm:ss a' }} <br>
+            Por: {{supportMessage?.supportName}} - {{supportMessage?.supportFrom}} </p>
+        <h4 class="modal-title" id="modal-title">{{supportMessage?.name}}</h4>
+        <p>{{supportMessage?.message}}</p>
+        <div class="form-group row" *ngIf="supportMessage?.status=='notAnswered'">
+            <label for="message" class="col-md-2 col-form-label">Mensage</label>
+            <div class="col-md-10">
+                <textarea name="message" id="message" class="form-control" rows="5" formControlName="message"  [ngClass]="{'is-invalid': form.message.dirty && form.message.errors}" required></textarea>
+                <div *ngIf="form.message.errors" class="invalid-feedback">
+                    <span *ngIf="form.message.errors.required">El campo Mensage es requerido</span>
+                </div>
+            </div>
+            <input type="hidden" name="email" formControlName="email" [value]="supportMessage?.supportFrom">
+        </div>
+    </div>
+    <div class="modal-footer" *ngIf="supportMessage?.status=='notAnswered'">
+        <button  class="btn btn-success" [disabled]="responseSupportForm.invalid">Enviar</button>
+        <button type="button" class="btn btn-danger" (click)="activeModal.close('Close click')">Cancelar</button>
+    </div>
+    <div class="modal-footer" *ngIf="supportMessage?.status=='answered'">
+        <button type="button" class="btn btn-danger" (click)="activeModal.close('Close click')">Cerrar</button>
+    </div>
+</form>

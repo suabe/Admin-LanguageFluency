@@ -8,6 +8,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { first } from 'rxjs/operators';
 
 import { environment } from '../../../../environments/environment';
+import { AngularFirestore } from '@angular/fire/firestore';
 
 @Component({
   selector: 'app-login',
@@ -25,7 +26,7 @@ export class LoginComponent implements OnInit {
   year: number = new Date().getFullYear();
 
   // tslint:disable-next-line: max-line-length
-  constructor(private formBuilder: FormBuilder, private route: ActivatedRoute, private router: Router, public authenticationService: AuthenticationService, public authFackservice: AuthfakeauthenticationService) { }
+  constructor(private fbstore: AngularFirestore,private formBuilder: FormBuilder, private route: ActivatedRoute, private router: Router, public authenticationService: AuthenticationService, public authFackservice: AuthfakeauthenticationService) { }
 
   ngOnInit() {
     document.body.removeAttribute('data-layout');
@@ -58,12 +59,45 @@ export class LoginComponent implements OnInit {
     } else {
       if (environment.defaultauth === 'firebase') {
         this.authenticationService.login(this.f.email.value, this.f.password.value).then((res: any) => {
-          this.router.navigate(['/']).then(() => {
-            window.location.reload();
-          });
+          this.fbstore.collection('perfiles', ref => ref.where('email','==',this.f.email.value)).snapshotChanges()
+          .subscribe(data => {
+            data.forEach((getData:any) =>{
+              if(getData.payload.doc.data()['role'] != "admin" && getData.payload.doc.data()['role'] != "superadmin"){
+                this.authenticationService.logout();
+                this.error = "Su cuenta no está autorizada."
+              }
+              else{
+                if(getData.payload.doc.data()['status'] == "canceled"){
+                  console.log("Cancelado");
+                  this.error = "Su cuenta no está autorizada."
+                  if (environment.defaultauth === 'firebase') {
+                    this.authenticationService.logout();
+                  }
+                } else if (getData.payload.doc.data()['status'] == "suspended") {
+                  console.log("Suspendida");
+                  this.error = "Su cuenta está suspendida."
+                  if (environment.defaultauth === 'firebase') {
+                    this.authenticationService.logout();
+                  }
+                }
+                else{
+                  this.router.navigate(['/']);
+                }
+              }
+            })
+          })
         })
           .catch(error => {
-            this.error = error ? error : '';
+            console.log(error);
+            if(error == "The password is invalid or the user does not have a password."){
+              this.error = "La contraseña no es válida o el usuario no tiene contraseña."
+            }
+            else if(error == "There is no user record corresponding to this identifier. The user may have been deleted."){
+              this.error = "No hay ningún registro de usuario que corresponda a este identificador. Es posible que se haya eliminado al usuario."
+            }
+            else{
+              this.error = error ? error : '';
+            }
           });
       } else {
         this.authFackservice.login(this.f.email.value, this.f.password.value)

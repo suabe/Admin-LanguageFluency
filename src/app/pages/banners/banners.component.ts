@@ -60,6 +60,7 @@ export class BannersComponent implements OnInit {
 
   async getBanners() {
     try {
+      this.cargando = true;
       await this.fbstore.collection('banners').snapshotChanges()
       .subscribe(data => {
         //console.log(data);
@@ -83,7 +84,6 @@ export class BannersComponent implements OnInit {
 
     } catch (error) {
       console.log(error.message);
-
     }
   }
 

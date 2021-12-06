@@ -1,10 +1,11 @@
 import { ChartType } from './home.model';
 import { graphic } from 'echarts';
 
+
 const lineChart: ChartType = {
     xAxis: {
         type: 'category',
-        data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+        data: ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sab', 'Dom'],
         axisLabel: {
             textStyle: {
                 color: '#999'
@@ -66,7 +67,7 @@ const barChart: ChartType = {
     xAxis: [
         {
             type: 'category',
-            data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+            data: ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sab', 'Dom'],
             axisTick: {
                 show: false
             },
@@ -103,25 +104,25 @@ const barChart: ChartType = {
 };
 
 const speakerContry: ChartType = {
-    tooltip: {
-        trigger: 'item',
-        formatter: "{b}: {c} ({d}%)"
-    },
-    series: [{
-        data: [
-            { value: 4, name: 'MX' },
-            { value: 2, name: 'AR' }, 
-            { value: 7, name: 'US' }, 
-            { value: 5, name: 'CA' }],
-        type: 'pie',
-    }],
-    color: ['#556ee6', '#34c38f', '#f1b44c', '#50a5f1', '#f46a6a'],
-    legend: {
-        x: 'center',
-        y: 'bottom',
-        data: ['MX', 'AR', 'US', 'CA'],
-    },
-    
+    // tooltip: {
+    //     trigger: 'item',
+    //     formatter: "{b}: {c} ({d}%)"
+    // },
+    // series: [{
+    //     data: [
+    //         { value: 4, name: 'MX' },
+    //         { value: 2, name: 'AR' },
+    //         { value: 7, name: 'US' },
+    //         { value: 5, name: 'CA' }
+    //     ],
+    //     type: 'pie',
+    // }],
+    // color: ['#556ee6', '#34c38f', '#f1b44c', '#50a5f1', '#f46a6a'],
+    // legend: {
+    //     x: 'center',
+    //     y: 'bottom',
+    //     data: ['MX', 'AR', 'US', 'CA'],
+    // }
 }
 
 const newSpeaker: ChartType = {

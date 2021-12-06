@@ -2,13 +2,15 @@ import { Component, OnInit } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { Subject } from 'rxjs';
 import { UserProfileService } from '../../core/services/user.service';
-
+import Swal from 'sweetalert2';
+import { ExcellService } from '../../core/services/excell.service';
 @Component({
   selector: 'app-improvers',
   templateUrl: './improvers.component.html',
   styleUrls: ['./improvers.component.scss']
 })
 export class ImproversComponent implements OnInit {
+  usuarioLogeado;
   userList = [];
   cargando = false;
   breadCrumbItems: Array<{}>;
@@ -16,7 +18,8 @@ export class ImproversComponent implements OnInit {
   dtTrigger: Subject<any> = new Subject<any>();
   constructor(
     private fbstore: AngularFirestore,
-    public userService: UserProfileService
+    public userService: UserProfileService,
+    private excelService: ExcellService
   ) { }
 
   ngOnInit(): void {
@@ -50,13 +53,76 @@ export class ImproversComponent implements OnInit {
         }
       },
       dom: 'Bfrtip',
+      scrollX: true,
       buttons: [
-        'copy',
-        'print',
-        'excel',
-        'pdf'
+        {
+            extend: 'excelHtml5',
+            title: 'Reporte general improvers'
+        },
+        {
+          extend: 'copyHtml5',
+          title: 'Reporte general improvers'
+        }
+      ],
+      columnDefs: [
+        {
+          visible: false,
+          targets: [5]
+        },
+        {
+          visible: false,
+          targets: [7]
+        },
+        {
+          visible: false,
+          targets: [8]
+        },
+        {
+          visible: false,
+          targets: [10]
+        }
       ]
     };
+  }
+
+
+  async exportReporte() {
+    await this.fbstore.collection('plans', ref => ref.where('status', '==', 'active').orderBy('uid')).snapshotChanges()
+    .subscribe(async data => {
+      const planes = data.map( result => {
+          return {
+            planId: result.payload.doc.id,
+            plan: (result.payload.doc.data()['price'] == 'price_1IiLcPFjLGC5FmHqDAZZskyw') ? 'Fluency 10/3' : '+ Fluency',
+            uid: result.payload.doc.data()['uid'],
+            idioma: result.payload.doc.data()['idioma'],
+            creado: new Date(result.payload.doc.data()['creada']*1000)
+          }
+
+      } )
+      for (let index = 0; index < planes.length; index++) {
+        await this.fbstore.collection('perfiles').doc(planes[index]['uid']).snapshotChanges()
+        .subscribe(usuario => {
+          let today: any = new Date();
+          let birthDate = new Date(new Date((usuario.payload.data()['birthDate'] === undefined) ? usuario.payload.data()['birthDtate'] : usuario.payload.data()['birthDate']).toLocaleString('en-US'));
+          let birthday = +birthDate;
+          birthday = ~~((today - birthday) / (31557600000));
+          let bday = new Date(birthDate).toLocaleDateString();
+          planes[index]['LFID'] = usuario.payload.data()['LFId'];
+          planes[index]['Nombre'] = usuario.payload.data()['name'];
+          planes[index]['Apellidos'] = usuario.payload.data()['lastName'];
+          planes[index]['Email'] = usuario.payload.data()['email'];
+          planes[index]['Genero'] = usuario.payload.data()['gender'];
+          planes[index]['Pais'] = usuario.payload.data()['country'];
+          planes[index]['Telefono'] = usuario.payload.data()['phone'];
+          planes[index]['FechaNacimiento'] = bday;
+          planes[index]['Estatus'] = usuario.payload.data()['status'];
+          planes[index]['Registrado'] = new Date(usuario.payload.data()['creado']).toLocaleDateString('en-Us');          
+        })
+        
+      }
+      await this.excelService.exportAsExcelFile(planes,'General Improvers')
+      
+    })
   }
 
   async getClientes() {
@@ -74,7 +140,7 @@ export class ImproversComponent implements OnInit {
 
           let birthday = +birthDate;
           birthday = ~~((today - birthday) / (31557600000));
-
+          let bday = new Date(birthDate).toLocaleDateString();
           return {
             userId: result.payload.doc.id,
             userName: result.payload.doc.data()['name'],
@@ -83,8 +149,12 @@ export class ImproversComponent implements OnInit {
             userGender: result.payload.doc.data()['gender'],
             userLfNumber: result.payload.doc.data()['LFId'],
             userCountry: result.payload.doc.data()['country'],
+            userPhone: result.payload.doc.data()['phone'],
+            userIdioma: result.payload.doc.data()['idioma'],
+            userDayOfBirth: bday,
             userBirthDate: birthday,
-            userStatus: result.payload.doc.data()['status']
+            userStatus: result.payload.doc.data()['status'],
+            userCreatedAt: new Date(result.payload.doc.data()['creado']).toLocaleDateString('en-Us')
           }
           // this.cargando = false;
         });
@@ -107,15 +177,79 @@ export class ImproversComponent implements OnInit {
   }
 
   changeStatus(status: string, id: string){
-    this.fbstore.collection('perfiles').doc(id).update({status: status}).then(() => {
-      console.log("Status actualizado");
-    });
+    this.usuarioLogeado = JSON.parse(sessionStorage.getItem('authUser'));
+    var estado = "";
+    if(status == 'canceled'){
+      estado = "Cancelar"
+    }
+    else if(status == 'suspended'){
+      estado = "Suspender"
+    }
+    else if(status == 'active'){
+      estado = "Activar"
+    }
+    Swal.fire({
+      title: estado,
+      text: '¿Está seguro que quiere '+estado+' este improver?',
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Sí, '+estado,
+      cancelButtonText: 'No, aún no',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        Swal.fire({
+          title: "Confirme su contraseña para continuar",
+          input:'password',
+          inputPlaceholder: 'Ingrese su contraseña',
+          icon: 'info',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: 'Continuar',
+          cancelButtonText: 'Cancelar'
+        }).then((inputValue) => {
+          if (inputValue.value) {
+            var corecto = false;
+            this.fbstore.collection('perfiles').doc(this.usuarioLogeado.uid).ref.get().then(function (doc) {
+              if (doc.exists) {
+                if (doc.data()['password'] == inputValue.value) {
+                  corecto = true;
+                }
+              } 
+              else {
+                Swal.fire({
+                  icon: 'error',
+                  title: 'Lo sentimos...',
+                  text: 'Hubo un error. Intentelo más tarde',
+                })
+              }
+            }).then(()=>{
+              if(corecto == true){
+                this.fbstore.collection('perfiles').doc(id).ref.update({status: status}).then(() => {
+                  console.log("Status actualizado");
+                });
+              }
+              else{
+                Swal.fire({
+                  icon: 'error',
+                  title: 'Lo sentimos...',
+                  text: 'La contraseña es incorrecta',
+                })
+              }
+            })
+          }
+        })
+      }
+    })
   }
 
   ngOnDestroy(): void {
     //Called once, before the instance is destroyed.
     //Add 'implements OnDestroy' to the class.
     this.dtTrigger.unsubscribe();
+    // this.exportReporte().finally()
   }
 
 }

@@ -1,9 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
+import { AngularFireStorage } from "@angular/fire/storage";
 import { HttpClient } from '@angular/common/http';
 import { Subject } from 'rxjs';
 import { UserProfileService } from '../../core/services/user.service';
 import { isNumeric } from 'rxjs/util/isNumeric';
+import { map, finalize } from "rxjs/operators";
+import { Observable } from "rxjs";
 
 import Swal from 'sweetalert2';
 
@@ -17,18 +20,22 @@ export class FacturasComponent implements OnInit {
   cargando = false;
   breadCrumbItems: Array<{}>;
   dtOptions: any = {};
+  downloadURL: Observable<string>;
   dtTrigger: Subject<any> = new Subject<any>();
   base64: any;
+  fileSubir: any;
   ifInvoice: boolean = false;
+  ifInvoiceBtn: any;
   constructor(
     private fbstore: AngularFirestore,
     private http: HttpClient,
-    public userService: UserProfileService
+    public userService: UserProfileService,
+    private storage: AngularFireStorage
   ) { }
 
   ngOnInit(): void {
     this.userService.applyPermissions();
-    this.breadCrumbItems = [{ label: 'Language Fluency' }, { label: 'Speakers', active: true }];
+    this.breadCrumbItems = [{ label: 'Language Fluency' }, { label: 'Facturas', active: true }];
     this.getInvoice();
     this.dtOptions = {
       pagingType: 'full_numbers',
@@ -85,7 +92,8 @@ export class FacturasComponent implements OnInit {
             invoiceMessage: result.payload.doc.data()['message'],
             invoiceTaxData: result.payload.doc.data()['taxData']/*.join("<br>")*/,
             invoiceStatus: result.payload.doc.data()['status'],
-            creationTime: result.payload.doc.data()['creationTime']
+            creationTime: result.payload.doc.data()['creationTime'],
+            invoiceUrl: result.payload.doc.data()['file'],
             //creationTime: (isNumeric(result.payload.doc.data()['creationTime'])) ? result.payload.doc.data()['creationTime']: result.payload.doc.data()['creationTime'].toDate()
           }
           // this.cargando = false;
@@ -105,11 +113,10 @@ export class FacturasComponent implements OnInit {
 
     } catch (error) {
       console.log(error.message);
-
     }
   }
 
-  onFileSelected(event) {
+  onFileSelected(event, idbtn) {
     let file = event.target.files;
     /*this.readBase64(file)
     .then((data) => {
@@ -119,6 +126,7 @@ export class FacturasComponent implements OnInit {
     if (file.length > 0) {
         // Select the very first file from list
         let fileToLoad = file[0];
+        this.fileSubir = file[0];
         console.log(fileToLoad);
         // FileReader function for read the file.
         let fileReader = new FileReader();
@@ -128,6 +136,7 @@ export class FacturasComponent implements OnInit {
             // Print data in console
             //console.log(this.base64);
             this.ifInvoice = true;
+            this.ifInvoiceBtn = idbtn;
         };
         // Convert data to base64
         fileReader.readAsDataURL(fileToLoad);
@@ -135,6 +144,40 @@ export class FacturasComponent implements OnInit {
   }
 
   sendInvoice(id, info){
+    const fileNom = id+"_"+this.fileSubir.name;
+    const filePath = 'facturas/'+fileNom;
+    const fileRef = this.storage.ref(filePath);
+    const task = this.storage.upload('facturas/'+fileNom, this.fileSubir);
+    task
+      .snapshotChanges()
+      .pipe(
+        finalize(() => {
+          this.downloadURL = fileRef.getDownloadURL();
+          this.downloadURL.subscribe(url => {
+            if (url) {
+              console.log(url);
+              this.fbstore.collection('invoice').doc(id).update({
+                file: url,
+                upLoadedTime: new Date()
+              }).then(res => {
+                this.ifInvoiceBtn = "";
+                Swal.fire({
+                  title: 'Enviado',
+                  text: "La factura fue enviada correctamente.",
+                  icon: 'success',
+                  showCancelButton: false,
+                  confirmButtonColor: '#5438dc'
+                });
+              });
+            }
+          });
+        })
+      )
+      .subscribe(url => {
+        if (url) {
+          console.log(url);
+        }
+      });
     this.http.post('https://us-central1-ejemplocrud-e7eb1.cloudfunctions.net/sendEmailInvoice',{
       email: info.split("|")[0].trim(),
       file: this.base64
@@ -151,7 +194,13 @@ export class FacturasComponent implements OnInit {
       } else {
         console.log(data);
         await this.fbstore.collection('invoice').doc(id).update({status: 'sended'}).then(res => {
-          console.log('Factura enviada=>', res);
+          Swal.fire({
+            title: 'Enviado',
+            text: "La factura fue enviada correctamente.",
+            icon: 'success',
+            showCancelButton: false,
+            confirmButtonColor: '#5438dc'
+          });
         })
       }
     });

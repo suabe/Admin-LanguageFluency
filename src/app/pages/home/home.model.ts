@@ -9,4 +9,5 @@ export interface ChartType {
     animationEasing?: any;
     dataZoom?: any;
     toolbox?: any;
+    data?: any;
 }

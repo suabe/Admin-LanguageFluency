@@ -40,7 +40,7 @@
                         <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="row-border hover">
                             <thead>
                                 <tr>
-                                    <th></th>
+                                    <th>#</th>
                                     <th>Nombre</th>
                                     <th>Apellidos</th>
                                     <th>Email</th>
@@ -52,19 +52,19 @@
                             <tbody *ngIf="!cargando">
                                 <tr *ngFor="let user of userList; let i = index">
                                     <td>{{ i+1 }} </td>
-                                    <td>{{ user.userName }}</td>
-                                    <td>{{ user.userLastName }}</td>
+                                    <td style="text-transform: capitalize;">{{ user.userName }}</td>
+                                    <td style="text-transform: capitalize;">{{ user.userLastName }}</td>
                                     <td>{{ user.userEmail }}</td>
                                     <td>{{ user.userPermissions }}</td>
-                                    <td *ngIf="user.userStatus=='active'" style="background: #1cbb8c; color: white;">Active</td>
-                                    <td *ngIf="user.userStatus=='suspended'" style="background: #fcb92c; color: white;">Suspended</td>
-                                    <td *ngIf="user.userStatus=='canceled'" style="background: #ff3d60; color: white;">Canceled</td>
+                                    <td *ngIf="user.userStatus=='active'" style="background: #1cbb8c; color: white;">Activo</td>
+                                    <td *ngIf="user.userStatus=='suspended'" style="background: #fcb92c; color: white;">Suspendido</td>
+                                    <td *ngIf="user.userStatus=='canceled'" style="background: #ff3d60; color: white;">Cancelado</td>
                                     <td><button *ngIf="user.userStatus=='suspended'||user.userStatus=='canceled'" (click)="changeStatus('active', user.userId)" type="button" class="btn btn-success mt-1"><i
-                                        class="fas fa-check"></i> Activate</button>
+                                        class="fas fa-check"></i> Activar</button>
                                         <button *ngIf="user.userStatus=='active'" (click)="changeStatus('suspended', user.userId)" type="button" class="btn btn-warning mt-1"><i
-                                        class="fas fa-minus"></i> Suspend</button>
+                                        class="fas fa-minus"></i> Suspender</button>
                                         <button *ngIf="user.userStatus=='suspended'||user.userStatus=='active'" (click)="changeStatus('canceled', user.userId)" type="button" class="btn btn-danger mt-1"><i
-                                        class="fas fa-times-circle"></i> Cancel</button></td>
+                                        class="fas fa-times-circle"></i> Cancelar</button></td>
                                 </tr>
                             </tbody>
                         </table>

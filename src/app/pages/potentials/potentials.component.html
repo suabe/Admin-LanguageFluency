@@ -40,33 +40,35 @@
 										<th>Name</th>
 										<th>Last Name</th>
 										<th>Email</th>
-                    <th>LF number</th>
+                    					<th>LF number</th>
 										<th>Genre</th>
-                    <th>Age</th>
-                    <th>Country</th>
-                    <th>Language</th>
-                    <!--<th>Status</th>-->
-                    <th>Options</th>
-                    <!--<th>Activate</th>
-                    <th>Suspend</th>
-                    <th>Cancel</th>-->
+										<th>Birthday</th>
+										<th>Age</th>
+										<th>Phone</th>
+										<th>Country</th>
+										<th>Language</th>
+										<th>Date Created</th>
+										<th>Options</th>
 										<th>Details</th>
 									</tr>
 								</thead>
 								<tbody *ngIf="!cargando">
 									<tr *ngFor="let user of userList; let i = index">
 										<!--<td>{{ i+1 }} </td>-->
-										<td>{{ user.userName }}</td>
-										<td>{{ user.userLastName }}</td>
+										<td style="text-transform: capitalize;">{{ user.userName }}</td>
+										<td style="text-transform: capitalize;">{{ user.userLastName }}</td>
 										<td>{{ user.userEmail }}</td>
                     <td>{{ user.userLfNumber === undefined ? (i+1) : user.userLfNumber }}</td>
 										<td>{{ user.userGender | titlecase }}</td>
+										<td>{{ user.userDayOfBirth }}</td>
                     <td>{{ user.userBirthDate }}</td>
+					<td>{{ user.userPhone}}</td>
                     <td>{{ user.userCountry | uppercase }}</td>
-                    <td>{{ user.userLanguage === undefined ? '' : user.userLanguage[0] }}</td>
+                    <td style="text-transform: uppercase;">{{ user.userLanguage === undefined ? '' : user.userLanguage[0] }}</td>
+					<td>{{ user.userCreatedAt}}</td>
                     <!-- <td *ngIf="user.userStatus=='pending'" style="background: #fcb92c; color: white;">Pending</td> -->
                     <td><button *ngIf="user.userStatus=='pending'" (click)="changeStatus('active', user.userId)" type="button" class="btn btn-success"><i
-                        class="fas fa-check"></i> Approve</button></td>
+                        class="fas fa-check"></i> Aprobar</button></td>
                     <!--<td *ngIf="user.userStatus=='active'" style="background: #1cbb8c; color: white;">Active</td>-->
                     <!--<td *ngIf="user.userStatus=='suspended'" style="background: #fcb92c; color: white;">Suspended</td>-->
                     <!--<td *ngIf="user.userStatus=='canceled'" style="background: #ff3d60; color: white;">Canceled</td>-->

@@ -6,6 +6,8 @@ import { UserProfileService } from '../../core/services/user.service';
 import { isNumeric } from 'rxjs/util/isNumeric';
 
 import Swal from 'sweetalert2';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { ResponseSupportComponent } from '../response-support/response-support.component';
 
 @Component({
   selector: 'app-soporte',
@@ -22,12 +24,13 @@ export class SoporteComponent implements OnInit {
   constructor(
     private fbstore: AngularFirestore,
     private http: HttpClient,
-    public userService: UserProfileService
+    public userService: UserProfileService,
+    private modalService: NgbModal
   ) { }
 
   ngOnInit(): void {
     this.userService.applyPermissions();
-    this.breadCrumbItems = [{ label: 'Language Fluency' }, { label: 'Speakers', active: true }];
+    this.breadCrumbItems = [{ label: 'Language Fluency' }, { label: 'Soporte', active: true }];
     this.getSupport();
     this.dtOptions = {
       pagingType: 'full_numbers',
@@ -57,10 +60,14 @@ export class SoporteComponent implements OnInit {
       },
       dom: 'Bfrtip',
       buttons: [
-        'copy',
-        'print',
-        'excel',
-        'pdf'
+        {
+            extend: 'excelHtml5',
+            title: 'Reporte general improvers'
+        },
+        {
+          extend: 'copyHtml5',
+          title: 'Reporte general improvers'
+        }
       ]
     };
   }
@@ -82,6 +89,7 @@ export class SoporteComponent implements OnInit {
             supportId: result.payload.doc.id,
             supportFrom: result.payload.doc.data()['from'],
             supportMessage: result.payload.doc.data()['message'],
+            subjecttMessage: result.payload.doc.data()['name'],
             supportStatus: result.payload.doc.data()['status'],
             supportResponse: result.payload.doc.data()['response'],
             creationTime: result.payload.doc.data()['creationTime']
@@ -92,6 +100,7 @@ export class SoporteComponent implements OnInit {
         this.supportList.forEach((element) => {
           this.fbstore.collection('perfiles').doc(element.supportFrom).snapshotChanges()
           .subscribe(doc => {
+            element.supportName = doc.payload.data()['name']+" "+doc.payload.data()['lastName'];
             element.supportFrom = doc.payload.data()['email'] + " | " + ((doc.payload.data()['role'] == 'conversador') ? 'Speaker': 'Improver');
           });
         });
@@ -108,28 +117,33 @@ export class SoporteComponent implements OnInit {
     }
   }
 
-  sendSupport(id, info){
-    console.log(this.response);
-    this.http.post('https://us-central1-ejemplocrud-e7eb1.cloudfunctions.net/sendEmailSupport',{
-      email: info.split("|")[0].trim(),
-      response: this.response
-    }).subscribe(async (data: any) => {
-      if (data.error) {
-        console.log('Error=>', data.error);
-        Swal.fire({
-          title: 'Hay un problema',
-          text: data.error.message,
-          icon: 'warning',
-          showCancelButton: false,
-          confirmButtonColor: '#5438dc'
-        });
-      } else {
-        console.log(data);
-        await this.fbstore.collection('support').doc(id).update({status: 'answered', response: this.response}).then(res => {
-          console.log('Respuesta enviada=>', res);
-        })
-      }
-    });
+  readSupport(supportId) {
+    const modalRef = this.modalService.open(ResponseSupportComponent)
+    modalRef.componentInstance.supportId = supportId;
   }
+
+  // sendSupport(id, info){
+  //   console.log(this.response);
+  //   this.http.post('https://us-central1-ejemplocrud-e7eb1.cloudfunctions.net/sendEmailSupport',{
+  //     email: info.split("|")[0].trim(),
+  //     response: this.response
+  //   }).subscribe(async (data: any) => {
+  //     if (data.error) {
+  //       console.log('Error=>', data.error);
+  //       Swal.fire({
+  //         title: 'Hay un problema',
+  //         text: data.error.message,
+  //         icon: 'warning',
+  //         showCancelButton: false,
+  //         confirmButtonColor: '#5438dc'
+  //       });
+  //     } else {
+  //       console.log(data);
+  //       await this.fbstore.collection('support').doc(id).update({status: 'answered', response: this.response}).then(res => {
+  //         console.log('Respuesta enviada=>', res);
+  //       })
+  //     }
+  //   });
+  // }
 
 }
