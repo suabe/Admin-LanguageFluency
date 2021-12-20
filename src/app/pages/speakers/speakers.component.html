@@ -32,11 +32,10 @@
 							<table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="row-border hover table-responsive">
 								<thead>
 									<tr>
-										<!--<th></th>-->
+                    					<th>LFId</th>
 										<th>Nombre</th>
 										<th>Apellidos</th>
 										<th>Email</th>
-                    					<th>LFId</th>
 										<th>Genero</th>
 										<th>Cumpleaños</th>
 										<th>Edad</th>
@@ -51,27 +50,26 @@
 								</thead>
 								<tbody *ngIf="!cargando">
 									<tr *ngFor="let user of userList; let i = index">
-										<!--<td>{{ i+1 }} </td>-->
+                    					<td>{{ user.userLfNumber === undefined ? (i+1) : user.userLfNumber }}</td>
 										<td style="text-transform: capitalize;">{{ user.userName }}</td>
 										<td style="text-transform: capitalize;">{{ user.userLastName }}</td>
 										<td>{{ user.userEmail }}</td>
-                    <td>{{ user.userLfNumber === undefined ? (i+1) : user.userLfNumber }}</td>
 										<td>{{ user.userGender | titlecase }}</td>
 										<td>{{ user.userDayOfBirth }}</td>
-                    <td>{{ user.userBirthDate }}</td>
-					<td>{{ user.userPhone}}</td>
-                    <td>{{ user.userCountry | uppercase }}</td>
-                    <td style="text-transform: uppercase;">{{ user.userLanguage === undefined ? '' : user.userLanguage[0] }}</td>
-					<td>{{ user.userCreatedAt}}</td>
-                    <td *ngIf="user.userStatus=='active'" style="background: #1cbb8c; color: white;">Activo</td>
-                    <td *ngIf="user.userStatus=='suspended'" style="background: #fcb92c; color: white;">Suspendido</td>
-                    <td *ngIf="user.userStatus=='canceled'" style="background: #ff3d60; color: white;">Candelado</td>
-                    <td><button *ngIf="user.userStatus=='suspended'||user.userStatus=='canceled'" (click)="changeStatus('active', user.userId)" type="button" class="btn btn-sm btn-success mt-1"><i
-                        class="fas fa-check"></i> Activar</button>
-                        <button *ngIf="user.userStatus=='active'" (click)="changeStatus('suspended', user.userId)" type="button" class="btn btn-sm btn-warning mt-1"><i
-                        class="fas fa-minus"></i> Suspender</button>
-                        <button *ngIf="user.userStatus=='suspended'||user.userStatus=='active'" (click)="changeStatus('canceled', user.userId)" type="button" class="btn btn-sm btn-danger mt-1"><i
-                        class="fas fa-times-circle"></i> Cancelar</button></td>
+										<td>{{ user.userBirthDate }}</td>
+										<td>{{ user.userPhone}}</td>
+										<td>{{ user.userCountry | uppercase }}</td>
+										<td>
+											<span *ngFor="let idioma of user.userLanguage"> {{idioma | uppercase}} </span>
+										</td>
+										<td>{{ user.userCreatedAt}}</td>
+										<td *ngIf="user.userStatus=='active'" style="background: #1cbb8c; color: white;">Activo</td>
+										<td *ngIf="user.userStatus=='suspended'" style="background: #fcb92c; color: white;">Suspendido</td>
+										<td *ngIf="user.userStatus=='canceled'" style="background: #ff3d60; color: white;">Candelado</td>
+                    					<td><button *ngIf="user.userStatus=='suspended'||user.userStatus=='canceled'" (click)="changeStatus('active', user.userId)" type="button" class="btn btn-sm btn-success mt-1"><i class="fas fa-check"></i> Activar</button>
+											<button *ngIf="user.userStatus=='active'" (click)="changeStatus('suspended', user.userId)" type="button" class="btn btn-sm btn-warning mt-1"><i class="fas fa-minus"></i> Suspender</button>
+											<button *ngIf="user.userStatus=='suspended'||user.userStatus=='active'" (click)="changeStatus('canceled', user.userId)" type="button" class="btn btn-sm btn-danger mt-1"><i class="fas fa-times-circle"></i> Cancelar</button>
+										</td>
 										<td>
 											<div class="button-items">
 												<button [routerLink]="['/speaker',user.userId]" type="button" class="btn btn-primary"><i

@@ -32,16 +32,16 @@
 								<thead>
 									<tr>
 										<!--<th></th>-->
+                    					<th>LFId</th>
                     					<th>Nombre</th>
 										<th>Apellidos</th>
 										<th>Email</th>
-                    					<th>LFId</th>
 										<th>Genero</th>
 										<th>Cumpleaños</th>
 										<th>Edad</th>
 										<th>Telèfono</th>
-										<th>Idiomas</th>
 										<th>Pais</th>
+										<th>Horario</th>
 										<th>Fecha de registro</th>
 										<th>Estatus</th>
 										<th>Opciones</th>
@@ -50,31 +50,32 @@
 								</thead>
 								<tbody *ngIf="!cargando">
 									<tr *ngFor="let user of userList; let i = index">
-										<!--<td>{{ i+1 }} </td>-->
+										<td>{{ user.userLfNumber === undefined ? (i+1) : user.userLfNumber }}</td>
 										<td style="text-transform: capitalize;">{{ user.userName }}</td>
 										<td style="text-transform: capitalize;">{{ user.userLastName }}</td>
 										<td>{{ user.userEmail }}</td>
-                    <td>{{ user.userLfNumber === undefined ? (i+1) : user.userLfNumber }}</td>
 										<td>{{ user.userGender | titlecase }}</td>
 										<td>{{ user.userDayOfBirth }}</td>
-                    <td>{{ user.userBirthDate }}</td>
-					<td>{{ user.userPhone}}</td>
-					<td>{{ user.userIdioma}}</td>
-                    <td>{{ user.userCountry | uppercase }}</td>
-					<td>{{ user.userCreatedAt}}</td>
-                    <td *ngIf="user.userStatus=='active'" style="background: #1cbb8c; color: white;">Activo</td>
-                    <td *ngIf="user.userStatus=='suspended'" style="background: #fcb92c; color: white;">Suspendido</td>
-                    <td *ngIf="user.userStatus=='canceled'" style="background: #ff3d60; color: white;">Cancelado</td>
-                    <td><button *ngIf="user.userStatus=='suspended'||user.userStatus=='canceled'" (click)="changeStatus('active', user.userId)" type="button" class="btn btn-sm btn-success mt-1"><i
-                        class="fas fa-check"></i> Activar</button>
-                        <button *ngIf="user.userStatus=='active'" (click)="changeStatus('suspended', user.userId)" type="button" class="btn btn-sm btn-warning mt-1"><i
-                        class="fas fa-minus"></i> Suspender</button>
-                        <button *ngIf="user.userStatus=='suspended'||user.userStatus=='active'" (click)="changeStatus('canceled', user.userId)" type="button" class="btn btn-sm btn-danger mt-1"><i
-                        class="fas fa-times-circle"></i> Cancelar</button></td>
+										<td>{{ user.userBirthDate }}</td>
+										<td>{{ user.userPhone}}</td>
+										<td>{{ user.userCountry | uppercase }}</td>
+										<td>
+											<span *ngIf="user.userHorario == '8'">8:00 - 11:00</span>
+											<span *ngIf="user.userHorario == '11'">11:00 - 14:00</span>
+											<span *ngIf="user.userHorario == '14'">14:00 - 17:00</span>
+											<span *ngIf="user.userHorario == '17'">17:00 - 20:00</span>
+										</td>
+										<td>{{ user.userCreatedAt}}</td>
+										<td *ngIf="user.userStatus=='active'" style="background: #1cbb8c; color: white;">Activo</td>
+										<td *ngIf="user.userStatus=='suspended'" style="background: #fcb92c; color: white;">Suspendido</td>
+										<td *ngIf="user.userStatus=='canceled'" style="background: #ff3d60; color: white;">Cancelado</td>
+										<td><button *ngIf="user.userStatus=='suspended'||user.userStatus=='canceled'" (click)="changeStatus('active', user.userId)" type="button" class="btn btn-sm btn-success mt-1"><i class="fas fa-check"></i> Activar</button>
+											<button *ngIf="user.userStatus=='active'" (click)="changeStatus('suspended', user.userId)" type="button" class="btn btn-sm btn-warning mt-1"><i class="fas fa-minus"></i> Suspender</button>
+											<button *ngIf="user.userStatus=='suspended'||user.userStatus=='active'" (click)="changeStatus('canceled', user.userId)" type="button" class="btn btn-sm btn-danger mt-1"><i class="fas fa-times-circle"></i> Cancelar</button>
+										</td>
 										<td>
 											<div class="button-items">
-												<button [routerLink]="['/improver',user.userId]" type="button" class="btn btn-primary"><i
-														class="fas fa-eye"></i></button>
+												<button [routerLink]="['/improver',user.userId]" type="button" class="btn btn-primary"><i class="fas fa-eye"></i></button>
 											</div>
 										</td>
 									</tr>

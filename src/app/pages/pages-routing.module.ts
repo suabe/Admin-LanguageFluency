@@ -17,6 +17,8 @@ import { ChartjsComponent } from './chart/chartjs/chartjs.component';
 import { PotentialsComponent } from './potentials/potentials.component';
 import { PotentialComponent } from './potential/potential.component';
 import { NotificationsComponent } from './notifications/notifications.component';
+import { DashboardImproverComponent } from './dashboard-improver/dashboard-improver.component';
+import { DashboardSpeakerComponent } from './dashboard-speaker/dashboard-speaker.component';
 
 const routes: Routes = [
     { path: '', component: HomeComponent },
@@ -33,7 +35,9 @@ const routes: Routes = [
     { path: 'chart', component: ChartjsComponent },
     { path: 'potentials', component: PotentialsComponent },
     { path: 'potential/:id', component:  PotentialComponent },
-    { path: 'notifications', component: NotificationsComponent}
+    { path: 'notifications', component: NotificationsComponent},
+    { path: 'dashboard-improver', component: DashboardImproverComponent},
+    { path: 'dashboard-speaker', component: DashboardSpeakerComponent}
 ];
 
 @NgModule({

@@ -64,24 +64,7 @@ export class ImproversComponent implements OnInit {
           title: 'Reporte general improvers'
         }
       ],
-      columnDefs: [
-        {
-          visible: false,
-          targets: [5]
-        },
-        {
-          visible: false,
-          targets: [7]
-        },
-        {
-          visible: false,
-          targets: [8]
-        },
-        {
-          visible: false,
-          targets: [10]
-        }
-      ]
+      
     };
   }
 
@@ -149,8 +132,8 @@ export class ImproversComponent implements OnInit {
             userGender: result.payload.doc.data()['gender'],
             userLfNumber: result.payload.doc.data()['LFId'],
             userCountry: result.payload.doc.data()['country'],
-            userPhone: result.payload.doc.data()['phone'],
-            userIdioma: result.payload.doc.data()['idioma'],
+            userPhone: result.payload.doc.data()['code'],
+            userHorario: result.payload.doc.data()['horario'],
             userDayOfBirth: bday,
             userBirthDate: birthday,
             userStatus: result.payload.doc.data()['status'],

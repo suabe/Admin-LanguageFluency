@@ -12,7 +12,21 @@ export const MENU: MenuItem[] = [
         label: 'Dashboard',
         icon: 'ri-dashboard-line',
         link: '/',
-        status: false
+        status: false,
+        subItems: [
+            {
+                id: 12,
+                label: 'Dashboard Improvers',
+                link: '/dashboard-improver',
+                parentId: 2
+            },
+            {
+                id: 13,
+                label: 'Dashboard Speakers',
+                link: '/dashboard-speaker',
+                parentId: 2
+            }
+        ]
     },
     {
         id: 4,

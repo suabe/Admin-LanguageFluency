@@ -65,20 +65,7 @@ export class SpeakersComponent implements OnInit {
           title: 'Reporte general speakers'
         }
       ],
-      columnDefs: [
-        {
-          visible: false,
-          targets: [5]
-        },
-        {
-          visible: false,
-          targets: [7]
-        },
-        {
-          visible: false,
-          targets: [10]
-        }
-      ]
+      
     };
   }
 
@@ -105,7 +92,7 @@ export class SpeakersComponent implements OnInit {
             Email: result.payload.doc.data()['email'],
             Genero: result.payload.doc.data()['gender'],
             Pais: result.payload.doc.data()['country'],
-            Telefono: result.payload.doc.data()['phone'],
+            Telefono: result.payload.doc.data()['code'],
             FechaNacimiento: bday,
             Estatus: result.payload.doc.data()['status'],
             Registrado: new Date(result.payload.doc.data()['creado']).toLocaleDateString('en-Us')
@@ -145,7 +132,7 @@ export class SpeakersComponent implements OnInit {
             userLanguage: result.payload.doc.data()['idioma'],
             userBirthDate: birthday,
             userStatus: result.payload.doc.data()['status'],
-            userPhone: result.payload.doc.data()['phone'],
+            userPhone: result.payload.doc.data()['code'],
             userDayOfBirth: bday,
             userCreatedAt: new Date(result.payload.doc.data()['creado']).toLocaleDateString('en-Us')
           }

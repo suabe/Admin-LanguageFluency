@@ -52,6 +52,8 @@ import { NotificationsPipe } from './notifications.pipe';
 import { NotificationsComponent } from './notifications/notifications.component';
 import { AddNotificationComponent } from './add-notification/add-notification.component';
 import { ResponseSupportComponent } from './response-support/response-support.component';
+import { DashboardImproverComponent } from './dashboard-improver/dashboard-improver.component';
+import { DashboardSpeakerComponent } from './dashboard-speaker/dashboard-speaker.component';
 
 const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
   suppressScrollX: true,
@@ -59,7 +61,7 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
 };
 
 @NgModule({
-  declarations: [DashboardComponent, CalendarComponent, ChatComponent, KanbanComponent, HomeComponent, ImproversComponent, SpeakersComponent, ImproverComponent, AdministratorsComponent, BannersComponent, PagosComponent, FacturasComponent, SoporteComponent, MetricasComponent, SpeakerComponent, AddAdminComponent, AddBannerComponent, PotentialsComponent, PotentialComponent, AddPotentialComponent, NotificationsPipe, NotificationsComponent, AddNotificationComponent, ResponseSupportComponent],
+  declarations: [DashboardComponent, CalendarComponent, ChatComponent, KanbanComponent, HomeComponent, ImproversComponent, SpeakersComponent, ImproverComponent, AdministratorsComponent, BannersComponent, PagosComponent, FacturasComponent, SoporteComponent, MetricasComponent, SpeakerComponent, AddAdminComponent, AddBannerComponent, PotentialsComponent, PotentialComponent, AddPotentialComponent, NotificationsPipe, NotificationsComponent, AddNotificationComponent, ResponseSupportComponent, DashboardImproverComponent, DashboardSpeakerComponent],
   imports: [
     CommonModule,
     FormsModule,

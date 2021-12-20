@@ -120,7 +120,7 @@ export class PotentialsComponent implements OnInit {
             userStatus: result.payload.doc.data()['status'],
             userDayOfBirth: bday,
             userPhone: result.payload.doc.data()['phone'],
-            userCreatedAt:  result.payload.doc.data()['creado'].toDate().toLocaleString('en-US')
+            userCreatedAt:  new Date(result.payload.doc.data()['creado']).toLocaleDateString('en-Us')
           }
           // this.cargando = false;
         });
@@ -156,32 +156,32 @@ export class PotentialsComponent implements OnInit {
             let user = doc.payload.data();
             user['role'] = "conversador";
 
-            // this.http.post('https://us-central1-ejemplocrud-e7eb1.cloudfunctions.net/regAdmin',{
-            //   email: user['email'],
-            //   name: user['name'],
-            //   lastName: user['lastName'],
-            //   password: user['password']
-            // }).subscribe(async (data: any) => {
-            //   if (data.error) {
-            //     console.log('Error=>', data.error);
-            //     Swal.fire({
-            //       title: 'Hay un problema',
-            //       text: data.error.message,
-            //       icon: 'warning',
-            //       showCancelButton: false,
-            //       confirmButtonColor: '#5438dc'
-            //     });
-            //   } else {
-            //     console.log(data);
-            //     await this.fbstore.collection('perfiles').doc(data.uid).set(user).then(res => {
-            //       console.log('Perfil creado=>', res);
-            //     })
-            //   }
-            // });
-
-            this.fbstore.collection('perfiles').doc(id).set(user).then(() => {
-              console.log("Usuario copiado");
+            this.http.post('https://us-central1-ejemplocrud-e7eb1.cloudfunctions.net/regAdmin',{
+              email: user['email'],
+              name: user['name'],
+              lastName: user['lastName'],
+              password: user['password']
+            }).subscribe(async (data: any) => {
+              if (data.error) {
+                console.log('Error=>', data.error);
+                Swal.fire({
+                  title: 'Hay un problema',
+                  text: data.error.message,
+                  icon: 'warning',
+                  showCancelButton: false,
+                  confirmButtonColor: '#5438dc'
+                });
+              } else {
+                console.log(data);
+                await this.fbstore.collection('perfiles').doc(data.uid).set(user).then(res => {
+                  console.log('Perfil creado=>', res);
+                })
+              }
             });
+
+            // this.fbstore.collection('perfiles').doc(id).set(user).then(() => {
+            //   console.log("Usuario copiado");
+            // });
 
           });
 
