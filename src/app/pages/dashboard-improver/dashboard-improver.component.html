@@ -1,1 +1,92 @@
-<p>dashboard-improver works!</p>
+<div class="container-fluid">
+    <app-pagetitle title="Imrovers" [breadcrumbItems]="breadCrumbItems"></app-pagetitle>
+    <form [formGroup]="filtroForm" (ngSubmit)="filtrar()">
+        <div class="row mb-2">
+            <div class="col-2">
+                <div class="form-group">
+                    <select name="ano" id="ano" formControlName="ano" class="form-control">
+                        <option value="">Selecciona Año</option>
+                        <option value="2022">2022</option>
+                        <option value="2021">2021</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-2">
+                <select name="mes" id="mes" formControlName="mes" class="form-control">
+                    <option *ngFor="let dates of collectGetmonths" [selected]="dates.selectMonth" value="{{dates.fecha}}">{{dates.mes}}</option>
+                </select>
+            </div>
+            <div class="col-2">
+                <button type="submit" class="btn btn-success">Filtrar</button>
+            </div>
+            <div class="col-2">{{lengthImprover}}</div>
+        </div>
+    </form>
+    <div class="row mb-2">
+        <div class="col-6">
+          <div class="card">
+            <div class="card-header">
+              <h4>Por país</h4>
+            </div>
+            <div class="card-body">
+              <div echarts [options]="improverPerCountry" class="demo-chart"></div>
+            </div>
+          </div>
+        </div>
+        <div class="col-6">
+          <div class="card">
+            <div class="card-header">
+              <h4>Por Idioma</h4>
+            </div>
+            <div class="card-body">
+              <div echarts [options]="improverPerLanguage" class="demo-chart"></div>
+            </div>
+          </div>
+        </div>
+    </div>
+    <div class="row mb-2">
+      <div class="col-6">
+        <div class="card">
+          <div class="card-header">
+            <h4>Por Genero</h4>
+          </div>
+          <div class="card-body">
+            <div echarts [options]="improverPerGender" class="demo-chart"></div>
+          </div>
+        </div>
+      </div>
+      <div class="col-6">
+        <div class="card">
+          <div class="card-header">
+            <h4>Por Edad</h4>
+          </div>
+          <div class="card-body">
+            <div echarts [options]="improverPerAge" class="demo-chart"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row mb-2">
+      <div class="col-6">
+        <div class="card">
+          <div class="card-header">
+            <h4>Estatus</h4>
+          </div>
+          <div class="card-body">
+            <div echarts [options]="improverPerStatus" class="demo-chart"></div>
+          </div>
+        </div>
+      </div>
+      <div class="col-6">
+        <div class="card">
+          <div class="card-header">
+            <h4>Por Horario</h4>
+          </div>
+          <div class="card-body">
+            <div echarts [options]="improverPerSchedule" class="demo-chart"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+</div>
+

@@ -187,8 +187,8 @@
                           </thead>
                           <tbody>
                             <tr *ngFor="let planes of plans">
-                              <td *ngIf="planes.plan === 'price_1IiLcPFjLGC5FmHqDAZZskyw'">Fluecy 10/3</td>
-                              <td *ngIf="planes.plan === 'price_1IiLr3FjLGC5FmHq8Z2z8pnq'">+ Fluecy</td>
+                              <td *ngIf="planes.plan === 'price_1IiLcPFjLGC5FmHqDAZZskyw'">Fluency 10/3</td>
+                              <td *ngIf="planes.plan === 'price_1IiLr3FjLGC5FmHq8Z2z8pnq'">+ Fluency</td>
                               <td>{{planes.idioma | uppercase}}</td>
                               <td *ngIf="planes.status=='active'" style="background: #1cbb8c; color: white;">Activo</td>
                               <td *ngIf="planes.status=='suspended'" style="background: #fcb92c; color: white;">Suspendido</td>
@@ -213,7 +213,7 @@
             <div class="mt-4" *ngIf="llamadas">
               <h5 class="font-size-14">Llamadas : </h5>
               <div class="d-inline-flex mb-3">
-                <div class="text-muted">( {{llamadas.length}} LLamadas relaizadas)</div>
+                <div class="text-muted">( {{llamadas.length}} LLamadas realizadas)</div>
               </div>
               <div class="border p-4 rounded">   
                 <div class="media border-bottom pb-3" *ngFor="let llamada of llamadas">
@@ -231,7 +231,7 @@
                       </li>
                     </ul>
                   </div>
-                  <!--<p class="float-sm-right font-size-12">{{ llamada.date}} </p>-->
+                  <p class="float-sm-right font-size-12">{{ llamada.date}} </p>
                 </div>
               </div>
             </div>

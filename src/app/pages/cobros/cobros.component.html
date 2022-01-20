@@ -1,10 +1,8 @@
 <div class="container-fluid">
-    <app-pagetitle title="Notificaciones" [breadcrumbItems]="breadCrumbItems"></app-pagetitle>
+    <app-pagetitle title="Cobros" [breadcrumbItems]="breadCrumbItems"></app-pagetitle>
     <div class="row mb-2">
         <div class="col-6">
-            <div class="button-items">
-                <button (click)="newNotification()" class="btn btn-success">Nueva Notificaciòn <i class="mdi mdi-image-area"></i> </button>
-            </div>
+            <button routerLink="/cobros-rechazados" class="btn btn-sm btn-danger">Rechazados</button>
             <!-- <div class="card">
                 <div class="card-body">
                 </div>
@@ -15,7 +13,7 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-body">
-                    <h4 class="card-title">Notificaciones enviadas</h4>
+                    <h4 class="card-title">Cobros Realizados</h4>
                     <div *ngIf="cargando" class="justify-content-center text-center">
                         <h2>Cargando</h2>
                         <!-- 1 -->
@@ -36,34 +34,34 @@
                         </div>
                         <p>Por favor espere...</p>
                     </div>
-                    <div *ngIf="!notificationList">
-                        <ngb-alert dismissible="false" type="success">
-                            No hay notificaciones
-                          </ngb-alert>
-                    </div>
-                    <div *ngIf="notificationList">
+                    <div>
                         <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="row-border hover">
                             <thead>
                                 <tr>
-                                    <th>Id</th>
-                                    <th>Titulo</th>
-                                    <th>Mensaje</th>
-                                    <th>Enviado</th>
-                                    <th>Opciones</th>
+                                    <th>Monto</th>
+                                    <th>Fecha</th>
+                                    <th>Plan</th>
+                                    <th>Idioma</th>
+                                    <th>Desde</th>
+                                    <th>Estatus Plan</th>
+                                    <th>Improver</th>
+                                    <th>PDF</th>
                                 </tr>
                             </thead>
                             <tbody *ngIf="!cargando">
-                                <tr *ngFor="let user of notificationList; let i = index">
-                                    <td>{{ user.notiId }} </td>
-                                    <td>{{user.title}}</td>
-                                    <td>{{user.message}}</td>
-                                    
-                                    <td>{{ user.created | date: 'dd/MM/yyyy hh:mm:ss a' }}</td>
+                                <tr *ngFor="let cobro of listaCobros; let i = index">
+                                    <td>{{cobro?.amount_paid/100 | currency:'MX'}}</td>
+                                    <td>{{cobro?.created*1000 | date}}</td>
                                     <td>
-                                        <div class="button-items">
-                                              <!-- <button type="button" class="btn btn-danger m-1" ><i
-                                              class="fas fa-times-circle"></i> Eliminar</button> -->
-                                        </div>
+                                        <span *ngIf="cobro?.price == 'price_1IiLcPFjLGC5FmHqDAZZskyw'">Fluency 10/3</span>
+                                        <span *ngIf="cobro?.price == 'price_1IiLr3FjLGC5FmHq8Z2z8pnq'">+Fluency</span>
+                                    </td>
+                                    <td>{{cobro?.idioma |uppercase}}</td>
+                                    <td>{{cobro?.start_date*1000 | date}}</td>
+                                    <td>{{cobro?.status | uppercase}}</td>
+                                    <td>{{cobro?.improver | titlecase}}</td>
+                                    <td>
+                                        <a [href]="cobro.pdfInvoice" class="btn btn-sm btn-success mt-1" target="_blank"><i class="mdi mdi-file-pdf-outline"></i></a>
                                     </td>
                                 </tr>
                             </tbody>
@@ -74,3 +72,4 @@
         </div>
     </div>
 </div>
+

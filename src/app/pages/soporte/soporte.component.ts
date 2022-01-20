@@ -87,6 +87,7 @@ export class SoporteComponent implements OnInit {
 
           return {
             supportId: result.payload.doc.id,
+            tipo: result.payload.doc.data()['tipo'],
             supportFrom: result.payload.doc.data()['from'],
             supportMessage: result.payload.doc.data()['message'],
             subjecttMessage: result.payload.doc.data()['name'],

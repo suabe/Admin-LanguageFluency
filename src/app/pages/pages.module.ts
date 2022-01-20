@@ -54,6 +54,9 @@ import { AddNotificationComponent } from './add-notification/add-notification.co
 import { ResponseSupportComponent } from './response-support/response-support.component';
 import { DashboardImproverComponent } from './dashboard-improver/dashboard-improver.component';
 import { DashboardSpeakerComponent } from './dashboard-speaker/dashboard-speaker.component';
+import { CobrosComponent } from './cobros/cobros.component';
+import { CobrosRechazadosComponent } from './cobros-rechazados/cobros-rechazados.component';
+import { CrearUsuariosComponent } from './crear-usuarios/crear-usuarios.component';
 
 const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
   suppressScrollX: true,
@@ -61,7 +64,7 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
 };
 
 @NgModule({
-  declarations: [DashboardComponent, CalendarComponent, ChatComponent, KanbanComponent, HomeComponent, ImproversComponent, SpeakersComponent, ImproverComponent, AdministratorsComponent, BannersComponent, PagosComponent, FacturasComponent, SoporteComponent, MetricasComponent, SpeakerComponent, AddAdminComponent, AddBannerComponent, PotentialsComponent, PotentialComponent, AddPotentialComponent, NotificationsPipe, NotificationsComponent, AddNotificationComponent, ResponseSupportComponent, DashboardImproverComponent, DashboardSpeakerComponent],
+  declarations: [DashboardComponent, CalendarComponent, ChatComponent, KanbanComponent, HomeComponent, ImproversComponent, SpeakersComponent, ImproverComponent, AdministratorsComponent, BannersComponent, PagosComponent, FacturasComponent, SoporteComponent, MetricasComponent, SpeakerComponent, AddAdminComponent, AddBannerComponent, PotentialsComponent, PotentialComponent, AddPotentialComponent, NotificationsPipe, NotificationsComponent, AddNotificationComponent, ResponseSupportComponent, DashboardImproverComponent, DashboardSpeakerComponent, CobrosComponent, CobrosRechazadosComponent, CrearUsuariosComponent],
   imports: [
     CommonModule,
     FormsModule,

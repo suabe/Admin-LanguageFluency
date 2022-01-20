@@ -1,0 +1,35 @@
+[
+  {
+    "nombre": 1,
+    "apellido": "demo",
+    "correo": "1_demo@lfdemo.com",
+    "cumpleanos": "10/01/1990",
+    "Pais": "MX",
+    "telefono": 8756240966,
+    "registro": "01/10/2021",
+    "idioma": "en",
+    "rol": "cliente"
+  },
+  {
+    "nombre": 2,
+    "apellido": "demo",
+    "correo": "2_demo@lfdemo.com",
+    "cumpleanos": "11/01/1990",
+    "Pais": "MX",
+    "telefono": 8756240967,
+    "registro": "02/10/2021",
+    "idioma": "en",
+    "rol": "cliente"
+  },
+  {
+    "nombre": 3,
+    "apellido": "demo",
+    "correo": "3_demo@lfdemo.com",
+    "cumpleanos": "12/01/1990",
+    "Pais": "MX",
+    "telefono": 8756240968,
+    "registro": "03/10/2021",
+    "idioma": "en",
+    "rol": "cliente"
+  }
+]

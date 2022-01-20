@@ -19,6 +19,9 @@ import { PotentialComponent } from './potential/potential.component';
 import { NotificationsComponent } from './notifications/notifications.component';
 import { DashboardImproverComponent } from './dashboard-improver/dashboard-improver.component';
 import { DashboardSpeakerComponent } from './dashboard-speaker/dashboard-speaker.component';
+import { CobrosComponent } from './cobros/cobros.component';
+import { CobrosRechazadosComponent } from './cobros-rechazados/cobros-rechazados.component';
+import { CrearUsuariosComponent } from './crear-usuarios/crear-usuarios.component';
 
 const routes: Routes = [
     { path: '', component: HomeComponent },
@@ -37,7 +40,10 @@ const routes: Routes = [
     { path: 'potential/:id', component:  PotentialComponent },
     { path: 'notifications', component: NotificationsComponent},
     { path: 'dashboard-improver', component: DashboardImproverComponent},
-    { path: 'dashboard-speaker', component: DashboardSpeakerComponent}
+    { path: 'dashboard-speaker', component: DashboardSpeakerComponent},
+    { path: 'cobros', component: CobrosComponent },
+    { path: 'cobros-rechazados', component: CobrosRechazadosComponent},
+    { path: 'crear-usuarios', component: CrearUsuariosComponent}
 ];
 
 @NgModule({

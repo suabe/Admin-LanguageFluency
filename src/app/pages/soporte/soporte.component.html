@@ -29,6 +29,7 @@
                         <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="row-border hover table-responsive">
                             <thead>
                                 <tr>
+                                    <th>Tipo</th>
                                     <th>Asunto</th>
                                     <th>Nombre</th>
                                     <th>Email</th>
@@ -39,6 +40,7 @@
                             </thead>
                             <tbody *ngIf="!cargando">
                                 <tr *ngFor="let support of supportList; let i = index">
+                                    <td>{{support.tipo}}</td>
                                     <td>{{ support.subjecttMessage }}</td>
                                     <td>{{ support.supportName }}</td>
                                     <td>{{ support.supportFrom }}</td>

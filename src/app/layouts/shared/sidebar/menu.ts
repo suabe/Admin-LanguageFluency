@@ -35,19 +35,19 @@ export const MENU: MenuItem[] = [
         link: '/improvers',
         status: false
     },
-    {
-        id: 11,
-        label: 'Gestión de Potenciales',
-        icon: 'fas fa-user-check',
-        link: '/potentials',
-        status: false
-    },
+    // {
+    //     id: 11,
+    //     label: 'Gestión de Potenciales',
+    //     icon: 'fas fa-user-check',
+    //     link: '/potentials',
+    //     status: false
+    // },
     {
         id: 5,
         label: 'Gestión de Speakers',
         icon: 'fab fa-teamspeak',
         link: '/speakers',
-        status: false
+        status: false,
     },
     {
         id: 6,
@@ -61,6 +61,13 @@ export const MENU: MenuItem[] = [
         label: 'Gestión de banners',
         icon: 'far fa-image',
         link: '/banners',
+        status: false
+    },
+    {
+        id: 14,
+        label: 'Gestion de Cobros',
+        icon:   'fas fa-coins',
+        link:   '/cobros',
         status: false
     },
     {
