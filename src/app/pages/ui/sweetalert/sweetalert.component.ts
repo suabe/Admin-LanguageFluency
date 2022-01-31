@@ -181,7 +181,7 @@ export class SweetalertComponent implements OnInit {
       cancelButtonColor: '#f46a6a',
       preConfirm: email => {
         // eslint-disable-next-line no-unused-vars
-        return new Promise((resolve, reject) => {
+        return new Promise<void>((resolve, reject) => {
           setTimeout(() => {
             if (email === 'taken@example.com') {
               Promise.reject(new Error('This email is already taken.'));

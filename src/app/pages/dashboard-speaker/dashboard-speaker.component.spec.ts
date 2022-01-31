@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { DashboardSpeakerComponent } from './dashboard-speaker.component';
 
@@ -6,7 +6,7 @@ describe('DashboardSpeakerComponent', () => {
   let component: DashboardSpeakerComponent;
   let fixture: ComponentFixture<DashboardSpeakerComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ DashboardSpeakerComponent ]
     })

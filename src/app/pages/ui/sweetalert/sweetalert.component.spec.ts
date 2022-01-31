@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { SweetalertComponent } from './sweetalert.component';
 
@@ -6,7 +6,7 @@ describe('SweetalertComponent', () => {
   let component: SweetalertComponent;
   let fixture: ComponentFixture<SweetalertComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ SweetalertComponent ]
     })
