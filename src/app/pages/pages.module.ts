@@ -7,7 +7,7 @@ import { WidgetModule } from '../shared/widget/widget.module';
 
 import { PagesRoutingModule } from './pages-routing.module';
 
-import { NgbNavModule, NgbDropdownModule, NgbTooltipModule, NgbAlertModule } from '@ng-bootstrap/ng-bootstrap';
+import { NgbNavModule, NgbDropdownModule, NgbTooltipModule, NgbAlertModule, NgbCollapseModule } from '@ng-bootstrap/ng-bootstrap';
 import { NgApexchartsModule } from 'ng-apexcharts';
 import { Ng2SearchPipeModule } from 'ng2-search-filter';
 import { NgxEchartsModule } from 'ngx-echarts';
@@ -57,12 +57,14 @@ import { DashboardSpeakerComponent } from './dashboard-speaker/dashboard-speaker
 import { CobrosComponent } from './cobros/cobros.component';
 import { CobrosRechazadosComponent } from './cobros-rechazados/cobros-rechazados.component';
 import { CrearUsuariosComponent } from './crear-usuarios/crear-usuarios.component';
+import { HotTableModule } from '@handsontable/angular';
+import { registerAllModules } from 'handsontable/registry';
 
 const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
   suppressScrollX: true,
   wheelSpeed: 0.3
 };
-
+registerAllModules();
 @NgModule({
   declarations: [DashboardComponent, CalendarComponent, ChatComponent, KanbanComponent, HomeComponent, ImproversComponent, SpeakersComponent, ImproverComponent, AdministratorsComponent, BannersComponent, PagosComponent, FacturasComponent, SoporteComponent, MetricasComponent, SpeakerComponent, AddAdminComponent, AddBannerComponent, PotentialsComponent, PotentialComponent, AddPotentialComponent, NotificationsPipe, NotificationsComponent, AddNotificationComponent, ResponseSupportComponent, DashboardImproverComponent, DashboardSpeakerComponent, CobrosComponent, CobrosRechazadosComponent, CrearUsuariosComponent],
   imports: [
@@ -78,6 +80,7 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
     NgbDropdownModule,
     NgbTooltipModule,
     NgApexchartsModule,
+    NgbCollapseModule,
     NgxEchartsModule.forRoot({
       echarts,
     }),
@@ -92,7 +95,8 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
     MapsModule,
     LeafletModule,
     WidgetModule,
-    DataTablesModule
+    DataTablesModule,
+    HotTableModule
   ],
   providers: [
     {

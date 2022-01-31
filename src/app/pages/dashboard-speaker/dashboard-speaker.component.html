@@ -6,6 +6,7 @@
                 <div class="form-group">
                     <select name="ano" id="ano" formControlName="ano" class="form-control">
                         <option value="">Selecciona Año</option>
+                        <option value="all">Todo</option>
                         <option value="2022">2022</option>
                         <option value="2021">2021</option>
                     </select>
@@ -13,6 +14,7 @@
             </div>
             <div class="col-2">
                 <select name="mes" id="mes" formControlName="mes" class="form-control">
+                    <option value="all">Todo</option>
                     <option *ngFor="let dates of collectGetmonths" [selected]="dates.selectMonth" value="{{dates.fecha}}">{{dates.mes}}</option>
                 </select>
             </div>

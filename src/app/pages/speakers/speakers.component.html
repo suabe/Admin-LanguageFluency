@@ -2,15 +2,14 @@
     <app-pagetitle title="Speakers" [breadcrumbItems]="breadCrumbItems"></app-pagetitle>
 	<div class="roe">
 		<div class="col-3">
-			<button routerLink="/potentials" class="btn btn-sm btn-success">Potenciales</button>
+			<h5>Total: {{totalSpeakers}}</h5>
+			<p><span *ngFor="let status of totalbyStatus">{{status.name}}: {{status.value}} </span></p>
+			
 		</div>
 	</div>
 	<div class="row mb-2">
 			<div class="col-3">
-				<label for="type" class="mt-3"><b>Mes</b></label>
-				<select class="form-control" id="type" (change)="selectMonths($event)">
-					<option *ngFor="let dates of collectGetmonths" selected="{{dates.selectMonth}}" value="{{dates.fecha}}">{{dates.mes}} {{dates.year}}</option>
-				</select>
+				<button routerLink="/potentials" class="btn btn-sm btn-success">Potenciales</button>	
 			</div>
 			<div class="col-3">            
 				
@@ -43,29 +42,38 @@
 					<div class="card-body">
 						
 						<div>
-							<table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="row-border hover table-responsive">
-								<thead>
-									<tr>
-										<th></th>
-                    					<th>LFId</th>
-										<th>Nombre</th>
-										<th>Apellidos</th>
-										<th>Email</th>
-										<th>Genero</th>
-										<th>Cumpleaños</th>
-										<th>Edad</th>
-										<th>Telèfono</th>
-										<th>Pais</th>
-										<th>Idiomas</th>
-										<th>Fecha de Registro</th>
-										<th>Llamadas</th>
-										<th>Monto llamadas realizadas</th>
-										<th>Monto referidos</th>
-										<th>Total a pagar</th>
-										<th>Opciones</th>
-										<th>Detalles</th>
-									</tr>
-								</thead>
+							<hot-table 
+							[data]="userList"
+							height="450"
+							
+							
+							[rowHeaders]="true"
+							[dropdownMenu]="true"
+							
+							[contextMenu]="true"
+							[multiColumnSorting]="true"
+							[filters]="true"
+							licenseKey="non-commercial-and-evaluation">
+								<hot-column renderer="negativeValueRenderer" data="userStatus" title="Estatus" [readOnly]="true"></hot-column>
+								<hot-column data="userLfNumber" title="LFid" [readOnly]="true"></hot-column>
+								<hot-column data="userName" title="Nombre" [readOnly]="true"></hot-column>
+								<hot-column data="userLastName" title="Apellidos" [readOnly]="true"></hot-column>
+								<hot-column data="userEmail" title="Email" [readOnly]="true"></hot-column>
+								<hot-column data="userGender" title="Genero" [readOnly]="true"></hot-column>
+								<hot-column data="userDayOfBirth" title="Cumpleaños" type="date" [readOnly]="true"></hot-column>
+								<hot-column data="userBirthDate" title="Edad" [readOnly]="true"></hot-column>
+								<hot-column data="userPhone" title="Telèfono" [readOnly]="true"></hot-column>
+								<hot-column data="userCountry" title="Pais" [readOnly]="true"></hot-column>
+								<hot-column data="userLanguage" title="Idiomas" [readOnly]="true"></hot-column>
+								<hot-column data="userCreatedAt" title="Fecha de Registro" [readOnly]="true"></hot-column>
+								<hot-column data="userCalls" title="Llamadas" renderer="html" [readOnly]="true"></hot-column>
+								<hot-column data="amountCallsMade" title="Monto llamadas realizadas" [readOnly]="true"></hot-column>
+								<hot-column data="referralAmount" title="Monto referidos" [readOnly]="true"></hot-column>
+								<hot-column data="totalAmount" title="Total a pagar" [readOnly]="true"></hot-column>
+								<hot-column data="userOption" title="Opciones" renderer="html" [readOnly]="true"></hot-column>
+							</hot-table>
+							<!-- <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="row-border hover table-responsive">
+								
 								<tbody *ngIf="!cargando">
 									<tr *ngFor="let user of userList; let i = index">
 										<td>
@@ -103,7 +111,7 @@
 										</td>
 									</tr>
 								</tbody>
-							</table>
+							</table> -->
 						</div>
 					</div>
 				</div>

@@ -24,9 +24,10 @@ export class ImproverComponent implements OnInit {
   plans:  Array<{}>;
   payments: Array<{}>;
   referidos: Array<{}>;
+  incidencias: Array<{}>;
   speakers:  {};
   speaker: {};
-  
+  isCollapsed: boolean;
   AVGtotal = 0;
   constructor(
     private fbstore: AngularFirestore,
@@ -55,6 +56,8 @@ export class ImproverComponent implements OnInit {
               fullName: result.payload.doc.data()['name']+" "+result.payload.doc.data()['lastName'],
               email: result.payload.doc.data()['email'],
               gender: result.payload.doc.data()['gender'],
+              status: result.payload.doc.data()['status'],
+              lfid: result.payload.doc.data()['LFId'],
             }
           })
         })
@@ -135,9 +138,19 @@ export class ImproverComponent implements OnInit {
           }
         })
       })
+      this._user.getIncidents(parametros['id']).subscribe(incidencias => {
+        this.incidencias = incidencias.map(result => {
+          return {
+            date: new Date(result.payload.doc.data()['creationTime']).toLocaleString('en-US'),
+            subject: result.payload.doc.data()['name'],
+            type: result.payload.doc.data()['tipo'],
+            status: result.payload.doc.data()['status'],
+          }
+        })
+      })
     })
     
-    
+    this.isCollapsed = true;
     this.breadCrumbItems = [{ label: 'Language Fluency' }, { label: 'Improver', active: true }];
   }
 
@@ -147,7 +160,7 @@ export class ImproverComponent implements OnInit {
     const httpOptions = {
       headers: new HttpHeaders({
         'Content-Type':  'application/json',
-        'Authorization': 'Basic ' + btoa('AC22ae1dad8bd832a2ecd25b28742feddc:6d0d6f07eba5f803bff62351433f8fc5')
+        'Authorization': 'Basic ' + btoa('AC22ae1dad8bd832a2ecd25b28742feddc:ce081d6d5457e766381d8ba6ca09d468')
       })
     }
     return this.http.get(url, httpOptions);
@@ -159,7 +172,7 @@ export class ImproverComponent implements OnInit {
     const httpOptions = {
       headers: new HttpHeaders({
         'Content-Type':  'application/json',
-        'Authorization': 'Basic ' + btoa('AC22ae1dad8bd832a2ecd25b28742feddc:6d0d6f07eba5f803bff62351433f8fc5')
+        'Authorization': 'Basic ' + btoa('AC22ae1dad8bd832a2ecd25b28742feddc:ce081d6d5457e766381d8ba6ca09d468')
       })
     }
     return this.http.get(url,httpOptions);

@@ -5,6 +5,7 @@ import { UserProfileService } from '../../core/services/user.service';
 import Swal from 'sweetalert2';
 import { ExcellService } from '../../core/services/excell.service';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
+import {starsRenderer} from './rendere.model';
 
 @Component({
   selector: 'app-speakers',
@@ -26,6 +27,9 @@ export class SpeakersComponent implements OnInit {
   yearMonthSelect: any = this.selectMonth + "/1/" + this.selectYear;
   yearMonth: any = (new Date().getMonth() + 1) + "/1/" + this.year;
   typeUser: any = "Speakers";
+  renderClass = starsRenderer
+  totalSpeakers = 0;
+  totalbyStatus = [];
   constructor(
     private fbstore: AngularFirestore,
     public userService: UserProfileService,
@@ -129,10 +133,16 @@ export class SpeakersComponent implements OnInit {
   }
 
   async getSpeakers() {
+    const toTitleCase = (str: string) =>
+      str
+        .match(/[A-Z]{2,}(?=[A-Z][a-z]+[0-9]*|\b)|[A-Z]?[a-z]+[0-9]*|[A-Z]|[0-9]+/g)
+        ?.map((x) => x.charAt(0).toUpperCase() + x.slice(1))
+        .join(" ");
     try {
       await this.fbstore.collection('perfiles', ref => ref.where('role', '==', 'conversador')).snapshotChanges()
       .subscribe(data => {
         //console.log(data);
+        var statusSpeak = [];
         this.userList = data.map( result => {
           //console.log(result);
           let today: any = new Date();
@@ -147,16 +157,17 @@ export class SpeakersComponent implements OnInit {
           return {
             userId: result.payload.doc.id,
             userName: result.payload.doc.data()['name'],
-            userLastName: result.payload.doc.data()['lastName'],
+            userLastName: toTitleCase(result.payload.doc.data()['lastName']),
             userEmail: result.payload.doc.data()['email'],
-            userGender: result.payload.doc.data()['gender'],
+            userGender: toTitleCase(result.payload.doc.data()['gender']),
             userLfNumber: result.payload.doc.data()['LFId'],
-            userCountry: result.payload.doc.data()['country'],
+            userCountry: result.payload.doc.data()['country'].toUpperCase(),
             userLanguage: result.payload.doc.data()['idioma'],
             userBirthDate: birthday,
-            userStatus: result.payload.doc.data()['status'],
+            userStatus: toTitleCase(result.payload.doc.data()['status']),
             userPhone: result.payload.doc.data()['code'],
             userDayOfBirth: bday,
+            userOption: '<a href="/speaker/'+result.payload.doc.id+'">Ver</a>',
             userCreatedAt: new Date(result.payload.doc.data()['creado']).toLocaleDateString('en-Us'),
             userCalls: '',
             amountCallsMade: 0,
@@ -165,7 +176,8 @@ export class SpeakersComponent implements OnInit {
           }
           // this.cargando = false;
         });
-
+        var dataStatus = [];
+        var nameStatus = [];
         this.userList.forEach((element) => {
           this.fbstore.collection('calls', ref => ref.where('speId', '==', element.userId)).snapshotChanges()
           .subscribe(doc => {
@@ -195,7 +207,27 @@ export class SpeakersComponent implements OnInit {
             });
 
           });
+          if (element.userStatus  != undefined) {
+            statusSpeak.push(element.userStatus)
+          }
         });
+        let countStatus = {};
+          for(let i = 0; i < statusSpeak.length; i++) {
+            if (countStatus[statusSpeak[i]]){
+              countStatus[statusSpeak[i]] += 1
+              } else {
+                countStatus[statusSpeak[i]] = 1
+              }  
+          }
+
+          for(let prop in countStatus) {
+              if (countStatus[prop] >= 1){
+                dataStatus.push({value: countStatus[prop], name:toTitleCase(prop)});
+                nameStatus.push(toTitleCase(prop))
+            }
+          }
+          this.totalbyStatus = dataStatus
+          console.log('por estustus: ',this.totalbyStatus);
         // this.cargando = false;
         this.dtTrigger.next();
         setTimeout(() => {
@@ -293,7 +325,7 @@ export class SpeakersComponent implements OnInit {
     const httpOptions = {
       headers: new HttpHeaders({
         'Content-Type':  'application/json',
-        'Authorization': 'Basic ' + btoa('9aa31c2d0d5d07a9ff66af0b2be1e969:f59fe5f034ce4cac5ebc6aebe9d3aad2')
+        'Authorization': 'Basic ' + btoa('9aa31c2d0d5d07a9ff66af0b2be1e969:ce081d6d5457e766381d8ba6ca09d468')
       })
     }
     return this.http.get(url, httpOptions);

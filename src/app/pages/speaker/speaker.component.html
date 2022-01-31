@@ -6,25 +6,11 @@
         <div class="card">
           <div class="card-body">
             <div class="row">
-              <div class="col-xl-5">
-                <div class="product-detail">
-                  <div class="row">
-
-                    <div class="col-md-10 col-12">
-                        <div class="">
-                            <!--<img [src]="usuario.foto" alt="" class="img-fluid mx-auto d-block">-->
-                            <div [ngStyle]="{'background-image': 'url(' + usuario.foto + ')', 'width': '19.7rem', 'height': '19.7rem', 'position': 'relative', 'top': '0', 'left': '0', 'background-position': 'top center', 'background-repeat': 'no-repeat', 'background-size': 'cover', 'border-radius': '50%', 'border': '2px solid #ff9400'}"></div>
-                          </div>
-                    </div>
-                  </div>
-                </div>
-                <!-- end product img -->
-              </div>
               <div class="col-xl-7">
                 <div class="mt-4 mt-xl-3">
-                  <span class="text-primary">{{usuario.role == 'conversador' ? 'Speaker' : 'Improver'}}</span>
+                  <h6 class="text-primary">{{ldfid}}</h6>
                   <h5 class="mt-1 mb-3" style="text-transform: capitalize;">{{usuario.name}} {{usuario.lastName}} </h5>
-
+                  <p>Idiomas: <i class="mdi mdi-translate mr-1 align-middle"></i> <span *ngFor="let idioma of usuario.idioma"> {{idioma | uppercase}} </span></p>
                   <div class="d-inline-flex mb-2">
                     <div class="text-muted mr-3" *ngIf="AVGtotal >= 5">
                       <span class="mdi mdi-star text-warning"></span>
@@ -71,32 +57,38 @@
                     <div class="text-muted">( {{AVGtotal | number : '1.2-2'}} )</div>
                   </div>
                   <!-- <p class="mt-3">{{usuario.bio}} </p> -->
-                  <hr class="my-4">
+                  
 
                   <div class="row">
                     <div class="col-md-7">
                       <div>
-                        <h5 class="font-size-14">Perfil</h5>
-                        <ul class="list-unstyled product-desc-list">
-                            <li>
-                              <p>Género <i class="mdi mdi-gender-male-female"></i>: {{usuario.gender | titlecase}}</p>
-                            </li>
-                            <li>
-                              <p>Fecha de nacimiento <i class="mdi mdi-cake"></i>: {{usuario.birthDate}}</p>
-                            </li>
-                            <li>
-                              <p>Correo electrónico <i class="mdi mdi-email"></i>: {{usuario.email}}</p>
-                            </li>
-                            <li>
-                              <p>Número telefónico <i class="mdi mdi-phone"></i>: {{usuario.phone}}</p>
-                            </li>
-                            <li>
-                              <p>Idiomas: <i class="mdi mdi-translate mr-1 align-middle"></i> <span *ngFor="let idioma of usuario.idioma"> {{idioma | uppercase}} </span></p>
-                            </li>
-                            <li>
-                              <p>Pais: <i class="mdi mdi-map-marker mr-1 align-middle"></i> {{usuario.country | uppercase}}</p>
-                            </li> 
-                        </ul>
+                        <a data-toggle="collapse" (click)="isCollapsed = !isCollapsed"
+                          href="javascript:void(0)">
+                          <h5 class="font-size-14 text-primary">Perfil</h5>
+                        </a>
+                        <div class="collapse" id="collapseExample" [ngbCollapse]="isCollapsed">
+                          <ul class="list-unstyled product-desc-list">
+                              <li>
+                                <p>Género <i class="mdi mdi-gender-male-female"></i>: {{usuario.gender | titlecase}}</p>
+                              </li>
+                              <li>
+                                <p>Fecha de nacimiento <i class="mdi mdi-cake"></i>: {{usuario.birthDate}}</p>
+                              </li>
+                              <li>
+                                <p>Correo electrónico <i class="mdi mdi-email"></i>: {{usuario.email}}</p>
+                              </li>
+                              <li>
+                                <p>Número telefónico <i class="mdi mdi-phone"></i>: {{usuario.phone}}</p>
+                              </li>
+                              <li>
+                                <p>Idiomas: <i class="mdi mdi-translate mr-1 align-middle"></i> <span *ngFor="let idioma of usuario.idioma"> {{idioma | uppercase}} </span></p>
+                              </li>
+                              <li>
+                                <p>Pais: <i class="mdi mdi-map-marker mr-1 align-middle"></i> {{usuario.country | uppercase}}</p>
+                              </li> 
+                          </ul>
+
+                        </div>
 
                       </div>
                     </div>
@@ -115,71 +107,90 @@
                 </div>
               </div>
             </div>
+            <hr class="my-4">
             <!-- end row -->
             <div class="mt-4">
-              <h5 class="font-size-14 mb-3">Movimientos: </h5>
-              <div class="product-desc">
-                <ul ngbNav #productNav="ngbNav" [activeId]="1" class="nav-tabs nav-tabs-custom">
-                  <li [ngbNavItem]="1">
-                    <a ngbNavLink>
-                      <a class="nav-link" id="desc-tab" data-toggle="tab" href="#desc" role="tab">Referidos</a>
-                    </a>
-                    <ng-template ngbNavContent>
-                      <div class="" style="max-height: 300px;overflow: scroll;">
-                        <table class="table mb-0">
-                          <thead>
-                            <tr>
-                              <th>Nombre</th>
-                              <th>E-mail</th>
-                              <th>Género</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            <tr *ngFor="let referido of referidos">
-                              <td>{{referido.fullName}}</td>
-                              <td>{{referido.email}}</td>
-                              <td>{{referido.gender}}</td>
-                            </tr>
-                          </tbody>
-                        </table>
-                      </div>
-                    </ng-template>
-                  </li>
-                  <li [ngbNavItem]="2">
-                    <a ngbNavLink>
-                      <a class="nav-link" id="specifi-tab" data-toggle="tab" href="#specifi" role="tab">Comisiones</a>
-                    </a>
-                    <ng-template ngbNavContent>
-                      <div class="" style="max-height: 300px;overflow: scroll;">
-                        <table class="table table-nowrap mb-0">
-                          <thead>
-                            <tr>
-                              <th>Monto</th>
-                              <th>Comprobante</th>
-                              <th>Fecha pagada</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            <tr *ngFor="let pagos of payments">
-                              <td>{{pagos.amount/100 | currency:'MX'}}</td>
-                              <td><a href="{{pagos.pdfInvoice}}" class="btn btn-sm btn-success mt-1">Ver comprobante</a></td>
-                              <td>{{pagos.dateCreated}}</td>
-                            </tr>
-                          </tbody>
-                        </table>
-                      </div>
-                    </ng-template>
-                  </li>
-                </ul>
-                <div [ngbNavOutlet]="productNav" class="border border-top-0 p-4"></div>
+              <div class="row">
+                <div class="col-md-8">
+                  <h5 class="font-size-14 mb-3">Llamadas por mes</h5>   
+                  <div>
+                    <table class="table table-nowrap mb-0">
+                      <thead>
+                        <tr>
+                          <th>Mes</th>
+                          <th>Llamadas del mes</th>
+                          <th>Total de minutos</th>
+                          <th>Minutos reales</th>
+                          <th>Pagos</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td>Enero</td>
+                          <th>0</th>
+                          <th>0</th>
+                          <th>0</th>
+                          <th>0</th>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div> 
+                </div>
+              </div>
+              <hr class="my-4">
+              <div class="row">
+                <div class="col-md-6">
+                  <h5 class="font-size-14 mb-3">Referidos: </h5>
+                  <div class="" >
+                    <table class="table mb-0">
+                      <thead>
+                        <tr>
+                          <th>LFId</th>
+                          <th>Nombre</th>
+                          <th>Género</th>
+                          <th>Estatus</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr *ngFor="let referido of referidos">
+                          <td>{{referido.lfid}}</td>
+                          <td>{{referido.fullName}}</td>
+                          <td>{{referido.gender}}</td>
+                          <td *ngIf="referido.status=='active'" style="background: #1cbb8c; color: white;">Activo</td>
+                          <td *ngIf="referido.status=='suspended'" style="background: #fcb92c; color: white;">Suspendido</td>
+                          <td *ngIf="referido.status=='canceled'" style="background: #ff3d60; color: white;">Cancelado</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <h5 class="font-size-14 mb-3">Comisiones: </h5>
+                  <div>
+                    <table class="table table-nowrap mb-0">
+                      <thead>
+                        <tr>
+                          <th>Monto</th>
+                          <th>Comprobante</th>
+                          <th>Fecha pagada</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr *ngFor="let pagos of payments">
+                          <td>{{pagos.amount/100 | currency:'MX'}}</td>
+                          <td><a href="{{pagos.pdfInvoice}}" class="btn btn-sm btn-success mt-1">Ver comprobante</a></td>
+                          <td>{{pagos.dateCreated}}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
               </div>
             </div>
+            <hr class="my-4">
             <div class="mt-4" *ngIf="llamadas">
-              <h5 class="font-size-14">Llamadas : </h5>
-              <label for="type" class="mt-3"><b>Mes</b></label>
-              <select class="form-control col-md-3" id="type" (change)="selectMonths($event)">
-                <option *ngFor="let dates of collectGetmonths" selected="{{dates.selectMonth}}" value="{{dates.fecha}}">{{dates.mes}} {{dates.year}}</option>
-              </select>
+              <h5 class="font-size-14">Llamadas : </h5>              
+              
               <div class="d-inline-flex mb-3 mt-3">
                 <div class="text-muted">( {{llamadas.length}} LLamadas realizadas)</div>
                 <div class="text-muted">(  Minutos de llamadas)</div>
@@ -210,7 +221,36 @@
                 </div>
               </div>
             </div>
-            
+            <hr class="my-4">
+            <div class="mt-4">
+              <div class="row">
+                <div class="col-md-6">
+                  <h5 class="font-size-14">Incidencias : </h5>
+                  <div>
+                    <table class="table mb-0">
+                      <thead>
+                        <tr>
+                          <th>Fecha</th>
+                          <th>Asunto</th>
+                          <th>Tipo</th>
+                          <th>Status</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr *ngFor="let incidente of incidencias">
+                          <td>{{incidente.date}}</td>
+                          <td>{{incidente.subject}}</td>
+                          <td>{{incidente.type}}</td>
+                          <td *ngIf="incidente.status=='notAnswered'" style="background: #fcb92c; color: white;">Sin responder</td>
+                          <td *ngIf="incidente.status=='answered'" style="background: #1cbb8c; color: white;">Suspendido</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+              
+            </div>
           </div>
         </div>
         <!-- end card -->

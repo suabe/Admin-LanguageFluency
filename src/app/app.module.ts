@@ -24,6 +24,7 @@ import { AngularFireDatabaseModule } from '@angular/fire/database';
 import { AngularFirestoreModule } from '@angular/fire/firestore';
 import { DataTablesModule } from 'angular-datatables';
 
+
 import localeEs from '@angular/common/locales/es-MX';
 import { registerLocaleData } from '@angular/common';
 registerLocaleData( localeEs, 'es-MX')
@@ -54,6 +55,7 @@ export function createTranslateLoader(http: HttpClient): any {
     PagesModule,
     LayoutsModule,
     DataTablesModule,
+    BrowserModule,
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,

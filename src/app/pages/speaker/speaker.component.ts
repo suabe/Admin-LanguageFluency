@@ -25,12 +25,14 @@ export class SpeakerComponent implements OnInit {
   breadCrumbItems: Array<{}>;
   payments: Array<{}>;
   referidos: Array<{}>;
+  incidencias: Array<{}>;
   year: any = new Date().getFullYear();
   selectMonth: any = (new Date().getMonth() + 1);
   selectYear: any = this.year;
   yearMonthSelect: any = this.selectMonth + "/1/" + this.selectYear;
   yearMonth: any = (new Date().getMonth() + 1) + "/1/" + this.year;
   AVGtotal = 0;
+  isCollapsed: boolean;
   constructor(
     private route: ActivatedRoute,
     public _user: SpeakersService,
@@ -41,6 +43,7 @@ export class SpeakerComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    this.isCollapsed = true;
     this.userService.applyPermissions();
     this.route.params.subscribe( parametros => {
       this._user.getSpeaker(parametros['id']).subscribe( usuario =>{
@@ -57,6 +60,8 @@ export class SpeakerComponent implements OnInit {
               fullName: result.payload.doc.data()['name']+" "+result.payload.doc.data()['lastName'],
               email: result.payload.doc.data()['email'],
               gender: result.payload.doc.data()['gender'],
+              status: result.payload.doc.data()['status'],
+              lfid: result.payload.doc.data()['LFId'],
             }
           })
         })
@@ -68,6 +73,16 @@ export class SpeakerComponent implements OnInit {
             amount: result.payload.doc.data()['amount_paid'],
             dateCreated: new Date(result.payload.doc.data()['created']).toLocaleString('en-US'),
             pdfInvoice: result.payload.doc.data()['pdfInvoice']
+          }
+        })
+      })
+      this._user.getIncidents(parametros['id']).subscribe(incidencias => {
+        this.incidencias = incidencias.map(result => {
+          return {
+            date: new Date(result.payload.doc.data()['creationTime']).toLocaleString('en-US'),
+            subject: result.payload.doc.data()['name'],
+            type: result.payload.doc.data()['tipo'],
+            status: result.payload.doc.data()['status'],
           }
         })
       })
@@ -169,7 +184,7 @@ export class SpeakerComponent implements OnInit {
     const httpOptions = {
       headers: new HttpHeaders({
         'Content-Type':  'application/json',
-        'Authorization': 'Basic ' + btoa('AC22ae1dad8bd832a2ecd25b28742feddc:6d0d6f07eba5f803bff62351433f8fc5')
+        'Authorization': 'Basic ' + btoa('AC22ae1dad8bd832a2ecd25b28742feddc:ce081d6d5457e766381d8ba6ca09d468')
       })
     }
     return this.http.get(url, httpOptions);
@@ -181,7 +196,7 @@ export class SpeakerComponent implements OnInit {
     const httpOptions = {
       headers: new HttpHeaders({
         'Content-Type':  'application/json',
-        'Authorization': 'Basic ' + btoa('AC22ae1dad8bd832a2ecd25b28742feddc:6d0d6f07eba5f803bff62351433f8fc5')
+        'Authorization': 'Basic ' + btoa('AC22ae1dad8bd832a2ecd25b28742feddc:ce081d6d5457e766381d8ba6ca09d468')
       })
     }
     return this.http.get(url,httpOptions);

@@ -2,11 +2,9 @@
     <app-pagetitle title="Improvers" [breadcrumbItems]="breadCrumbItems"></app-pagetitle>
 	<div class="row mb-2">
 		<div class="col-3">
-				<label for="type" class="mt-3"><b>Mes</b></label>
-				<select class="form-control" id="type" (change)="selectMonths($event)">
-					<option *ngFor="let dates of collectGetmonths" selected="{{dates.selectMonth}}" value="{{dates.fecha}}">{{dates.mes}} {{dates.year}}</option>
-				</select>
-			</div>
+			<h5>Total: {{totalImprover}}</h5>
+			<p><span *ngFor="let status of totalbyStatus">{{status.name}}: {{status.value}} </span></p>
+		</div>
 			<div class="col-3">            
 				
 				
@@ -39,89 +37,39 @@
 					<div class="card-body">
 						
 						<div>
-							<table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="row-border hover table-responsive">
-								<thead>
-									<tr>
-										<!--<th></th>-->
-										<th></th>
-                    					<th>LFId</th>
-                    					<th>Nombre</th>
-										<!-- <th>Apellidos</th>
-										<th>Email</th>
-										<th>Genero</th> -->
-										<th>Cumpleaños</th>
-										<th>Edad</th>
-										<th>Telèfono</th>
-										<th>Pais</th>
-										<th>Horario</th>
-										<th>Fecha de registro</th>
-										<th>Monto referidos</th>
-										<th>Total a pagar</th>
-										<th>Opciones</th>
-										<th>Detalles</th>
-									</tr>
-								</thead>
-								<tbody *ngIf="!cargando">
-									<tr *ngFor="let user of userList; let i = index">
-										<td>
-											<i *ngIf="user.userStatus=='active'" style="color: #1cbb8c;" class="mdi mdi-account-check"></i>
-											<i *ngIf="user.userStatus=='suspended'" style="color: #fcb92c;" class="mdi mdi-alert-outline"></i>
-											<i *ngIf="user.userStatus=='canceled'" style="color: #ff3d60;" class="mdi mdi-cancel"></i>
-										</td>
-										<td>{{ user.userLfNumber === undefined ? (i+1) : user.userLfNumber }}</td>
-										<td>
-											<span>{{ user.userName}}</span>&nbsp;<span>{{ user.userLastName }}</span> <br>
-											<span>{{ user.userEmail }}</span><br>
-											<span>{{ user.userGender | titlecase }}</span>
-										</td>
-										<!-- <td style="text-transform: capitalize;">{{ user.userLastName }}</td>
-										<td>{{ user.userEmail }}</td>
-										<td>{{ user.userGender | titlecase }}</td> -->
-										<td>{{ user.userDayOfBirth }}</td>
-										<td>{{ user.userBirthDate }}</td>
-										<td>{{ user.userPhone}}</td>
-										<td>{{ user.userCountry | uppercase }}</td>
-										<td>
-											<span *ngIf="user.userHorario == '8'">8:00 - 11:00</span>
-											<span *ngIf="user.userHorario == '11'">11:00 - 14:00</span>
-											<span *ngIf="user.userHorario == '14'">14:00 - 17:00</span>
-											<span *ngIf="user.userHorario == '17'">17:00 - 20:00</span>
-										</td>
-										<td>{{ user.userCreatedAt}}</td>
-										<td>${{ user.referralAmount }}</td>
-										<td><b class="text-info">${{ user.totalAmount }}</b></td>
-										<td><button *ngIf="user.userStatus=='suspended'||user.userStatus=='canceled'" (click)="changeStatus('active', user.userId)" type="button" class="btn btn-sm btn-success mt-1"><i class="fas fa-check"></i> Activar</button>
-											<button *ngIf="user.userStatus=='active'" (click)="changeStatus('suspended', user.userId)" type="button" class="btn btn-sm btn-warning mt-1"><i class="fas fa-minus"></i> Suspender</button>
-											<button *ngIf="user.userStatus=='suspended'||user.userStatus=='active'" (click)="changeStatus('canceled', user.userId)" type="button" class="btn btn-sm btn-danger mt-1"><i class="fas fa-times-circle"></i> Cancelar</button>
-										</td>
-										<td>
-											<div class="button-items">
-												<button [routerLink]="['/improver',user.userId]" type="button" class="btn btn-primary"><i class="fas fa-eye"></i></button>
-											</div>
-										</td>
-									</tr>
-								</tbody>
-								<tfoot>
-									<tr>
-										<th></th>
-                    					<th>LFId</th>
-                    					<th>Nombre</th>
-										<!-- <th>Apellidos</th>
-										<th>Email</th>
-										<th>Genero</th> -->
-										<th>Cumpleaños</th>
-										<th>Edad</th>
-										<th>Telèfono</th>
-										<th>Pais</th>
-										<th>Horario</th>
-										<th>Fecha de registro</th>
-										<th>Monto referidos</th>
-										<th>Total a pagar</th>
-										<th>Opciones</th>
-										<th>Detalles</th>
-									</tr>
-								</tfoot>
-							</table>
+							<hot-table
+							[data]="userList"
+							height="650"														
+							[rowHeaders]="true"
+							[dropdownMenu]="true"
+							[hiddenColumns]="hiddenColumns"
+							[contextMenu]="true"
+							[multiColumnSorting]="true"
+							[filters]="true"
+							licenseKey="non-commercial-and-evaluation">
+								<hot-column renderer="negativeValueRenderer" data="userStatus" [readOnly]="true" title="Status"></hot-column>								
+								<hot-column data="userLfNumber" [readOnly]="true" title="LFId"></hot-column>
+								<hot-column data="userName" [readOnly]="true" title="Name"></hot-column>
+								<hot-column data="userLastName" [readOnly]="true" title="LastName"></hot-column>
+								<hot-column data="userEmail" [readOnly]="true" title="Email"></hot-column>
+								<hot-column data="userPhone" [readOnly]="true" title="Tel"></hot-column>
+								<hot-column data="userGender" [readOnly]="true" title="Gender"></hot-column>
+								<hot-column data="userCountry" [readOnly]="true" title="Contry"></hot-column>
+								<hot-column data="userDayOfBirth" [readOnly]="true" title="Birth Day" type="date"></hot-column>
+								<hot-column data="userBirthDate" type="numeric" [readOnly]="true" title="Age"></hot-column>
+								<hot-column data="userBio" [readOnly]="true" title="Bio"></hot-column>
+								<hot-column data="userCreatedAt" [readOnly]="true" title="User Created" type="date"></hot-column>
+								<hot-column data="plans.price" [readOnly]="true" title="Plan"></hot-column>
+								<hot-column data="plans.idioma" [readOnly]="true" title="Language"></hot-column>
+								<hot-column data="plans.start" [readOnly]="true" title="Schedule"></hot-column>
+								<hot-column data="plans.creada" [readOnly]="true" title="Date Subscription" type="date"></hot-column>
+								<hot-column data="plans.totalCalls" [readOnly]="true" title="Calls"></hot-column>
+								<hot-column data="plans.totalAVG" [readOnly]="true" title="AVG"></hot-column>
+								<hot-column data="plans.status" [readOnly]="true" title="Plan Status"></hot-column>
+								<hot-column renderer="html" data="userOption" [readOnly]="true" title="Options">
+									
+								</hot-column>
+							</hot-table>
 						</div>
 					</div>
 				</div>

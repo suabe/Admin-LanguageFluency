@@ -1,27 +1,25 @@
 import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
-import { Subject } from 'rxjs';
 import { UserProfileService } from '../../core/services/user.service';
 import Swal from 'sweetalert2';
 import { ExcellService } from '../../core/services/excell.service';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
+import Handsontable from 'handsontable/base';
+import { HandsontableCellType } from 'handsontable/cellTypes';
+import {starsRenderer} from './rendere.model';
 
-import { DataTableDirective } from 'angular-datatables';
 
 @Component({
   selector: 'app-improvers',
   templateUrl: './improvers.component.html',
   styleUrls: ['./improvers.component.scss']
 })
-export class ImproversComponent implements OnInit, AfterViewInit {
+export class ImproversComponent implements OnInit {
   usuarioLogeado;
   userList = [];
   cargando = false;
   breadCrumbItems: Array<{}>;
-  @ViewChild(DataTableDirective, {static: false})
-  datatableElement: DataTableDirective;
-  dtOptions: any = {};
-  dtTrigger: Subject<any> = new Subject<any>();
+  
   getMonths = [];
   collectGetmonths:Array<{}>;
   year: any = new Date().getFullYear();
@@ -30,6 +28,18 @@ export class ImproversComponent implements OnInit, AfterViewInit {
   yearMonthSelect: any = this.selectMonth + "/1/" + this.selectYear;
   yearMonth: any = (new Date().getMonth() + 1) + "/1/" + this.year;
   typeUser: any = "Speakers";
+  hotSettings = {}
+  /**
+   * Config-Tabla
+  */
+ 
+   renderClass = starsRenderer
+   hiddenColumns = {
+     indicators: true
+   };
+   licenseKey = "non-commercial-and-evaluation";
+   totalImprover = 0;
+   totalbyStatus = [];
   constructor(
     private fbstore: AngularFirestore,
     public userService: UserProfileService,
@@ -41,46 +51,7 @@ export class ImproversComponent implements OnInit, AfterViewInit {
     this.userService.applyPermissions();
     this.breadCrumbItems = [{ label: 'Language Fluency' }, { label: 'Improvers', active: true }];
     this.getClientes();
-    this.dtOptions = {
-      pagingType: 'full_numbers',
-      responsive: true,
-      retrieve: true,
-      language: {
-        processing: "Procesando...",
-        search: "Buscar:",
-        lengthMenu: "Mostrar _MENU_ &eacute;l&eacute;ments",
-        info: "Mostrando desde _START_ al _END_ de _TOTAL_ elementos",
-        infoEmpty: "Mostrando ningún elemento.",
-        infoFiltered: "(filtrado _MAX_ elementos total)",
-        infoPostFix: "",
-        loadingRecords: "Cargando registros...",
-        zeroRecords: "No se encontraron registros",
-        emptyTable: "No hay datos disponibles en la tabla",
-        paginate: {
-          first: "Primero",
-          previous: "Anterior",
-          next: "Siguiente",
-          last: "Último"
-        },
-        aria: {
-          sortAscending: ": Activar para ordenar la tabla en orden ascendente",
-          sortDescending: ": Activar para ordenar la tabla en orden descendente"
-        }
-      },
-      dom: 'Bfrtip',
-      scrollX: true,
-      buttons: [
-        {
-            extend: 'excelHtml5',
-            title: 'Reporte general improvers'
-        },
-        {
-          extend: 'copyHtml5',
-          title: 'Reporte general improvers'
-        }
-      ],
-      
-    };
+    
 
     var limitMonth = new Date().getMonth();
     var limitYear = new Date().getFullYear();
@@ -97,28 +68,7 @@ export class ImproversComponent implements OnInit, AfterViewInit {
   }
 
  
-  ngAfterViewInit(): void {
-    this.datatableElement.dtInstance.then((dtInstance: DataTables.Api) => {
-      dtInstance.columns().every(function () {
-        const column = this;
-        const select = $('<select><option value=""></option></select>')
-            .appendTo( column.footer() )
-            .on( 'change', function () {
-                const val = $.fn.dataTable.util.escapeRegex(
-                  this['value']
-                );
-
-                column
-                    .search( val ? '^'+val+'$' : '', true, false )
-                    .draw();
-            } );
-
-        column.data().unique().sort().each( function ( d, j ) {
-            select.append( '<option value="'+d+'">'+d+'</option>' )
-        } );
-      });
-    })
-  }
+  
 
 
   async exportReporte() {
@@ -161,10 +111,16 @@ export class ImproversComponent implements OnInit, AfterViewInit {
   }
 
   async getClientes() {
+    const toTitleCase = (str: string) =>
+      str
+        .match(/[A-Z]{2,}(?=[A-Z][a-z]+[0-9]*|\b)|[A-Z]?[a-z]+[0-9]*|[A-Z]|[0-9]+/g)
+        ?.map((x) => x.charAt(0).toUpperCase() + x.slice(1))
+        .join(" ");
     try {
       await this.fbstore.collection('perfiles', ref => ref.where('role', '==', 'cliente')).snapshotChanges()
       .subscribe(data => {
         //console.log(data);
+        var statusImpro = [];
         this.userList = data.map( result => {
           //console.log(result);
           let today: any = new Date();
@@ -181,55 +137,74 @@ export class ImproversComponent implements OnInit, AfterViewInit {
             userName: result.payload.doc.data()['name'],
             userLastName: result.payload.doc.data()['lastName'],
             userEmail: result.payload.doc.data()['email'],
-            userGender: result.payload.doc.data()['gender'],
+            userGender: toTitleCase(result.payload.doc.data()['gender']),
             userLfNumber: result.payload.doc.data()['LFId'],
             userCountry: result.payload.doc.data()['country'],
             userPhone: result.payload.doc.data()['code'],
-            userHorario: result.payload.doc.data()['horario'],
             userDayOfBirth: bday,
             userBirthDate: birthday,
-            userStatus: result.payload.doc.data()['status'],
+            userBio: result.payload.doc.data()['bio'],
+            userStatus: toTitleCase(result.payload.doc.data()['status']),
+            userOption: '<a href="/improver/'+result.payload.doc.id+'">Ver</a>',
             userCreatedAt: new Date(result.payload.doc.data()['creado']).toLocaleDateString('en-Us'),
-            userCalls: '',
-            amountCallsMade: 0,
-            referralAmount: 0,
-            totalAmount: 0,
+            plans: {},
+            totalCalls: 0,
+            totalAVG: 0
           }
           // this.cargando = false;
         });
+        this.totalImprover = this.userList.length
+        var dataStatus = [];
+        var nameStatus = [];
+        this.userList.forEach((user) => {
+          this.fbstore.collection('plans', ref => ref.where('uid','==',user.userId)).get().subscribe(plans => {
+            plans.forEach((doc) => {
+              //console.log(doc.id, ' => ', doc.data());
+              user.plans.price = (doc.data()['price'] == 'price_1IiLcPFjLGC5FmHqDAZZskyw') ? 'Fluency 10/3':'+Fluency',
+              user.plans.idioma = toTitleCase(doc.data()['idioma']),
+              user.plans.start = doc.data()['start']+' Hrs',
+              user.plans.creada = new Date(doc.data()['creada']).toLocaleDateString(),
+              user.plans.status = doc.data()['status']
+            })
+            //user.plans = plans
+          })
+          this.fbstore.collection('calls', ref => ref.where('inmpId','==',user.userId)).get()
+          .subscribe(calls => {
+            user.totalCalls = calls.size
+            let promedio = 0;
+            calls.forEach((doc) => {
+              calificacion: doc.data()['calImp'];
+              
+              promedio+=doc.data()['calImp']['avg']
+            })
+            user.totalAVG = promedio/calls.size
+          })
+          if (user.userStatus  != undefined) {
+            statusImpro.push(user.userStatus)
+          }
+          
+        })
+        let countStatus = {};
+          for(let i = 0; i < statusImpro.length; i++) {
+            if (countStatus[statusImpro[i]]){
+              countStatus[statusImpro[i]] += 1
+              } else {
+                countStatus[statusImpro[i]] = 1
+              }  
+          }
 
-        this.userList.forEach((element) => {
-          this.fbstore.collection('calls', ref => ref.where('speId', '==', element.userId)).snapshotChanges()
-          .subscribe(doc => {
-            let numberCalls = 0;
-            let minutes: number = 0;
-            element.userCalls = "<b class='text-info'>" + numberCalls + "</b> llamadas<br>" + "<b class='text-info'>" + minutes.toFixed(2) + "</b> minutos";
-
-            doc.map(result2 => {
-              this.getInfoTwilio(result2.payload.doc.data()['sid']).subscribe(data2 => {
-                //console.log(element.userId, data2['date_created']);
-                let callMonth = (new Date(data2['date_created']).getMonth() + 1);
-                let callYear = new Date(data2['date_created']).getFullYear();
-                //console.log(callMonth, callYear, this.selectMonth, this.selectYear);
-                if (this.selectMonth == callMonth && this.selectYear == callYear) {
-                  numberCalls++;
-                  element.amountCallsMade = numberCalls * 15;
-                  element.referralAmount = 0 * 0;
-                  element.totalAmount = (element.amountCallsMade + element.referralAmount).toFixed(2);
-                  console.warn("Mismo mes");
-                  minutes += (parseInt(data2['duration']) / 60);
-                  element.userCalls = "<b class='text-info'>" + numberCalls + "</b> llamadas<br>" + "<b class='text-info'>" + minutes.toFixed(2) + "</b> minutos";
-                }
-                else{
-                  console.log("Diferente mes");
-                }
-              });
-            });
-
-          });
-        });
+          for(let prop in countStatus) {
+              if (countStatus[prop] >= 1){
+                dataStatus.push({value: countStatus[prop], name:toTitleCase(prop)});
+                nameStatus.push(toTitleCase(prop))
+            }
+          }
+          this.totalbyStatus = dataStatus
+          console.log('por estustus: ',this.totalbyStatus);
+          //console.log(this.userList);
+       
         // this.cargando = false;
-        this.dtTrigger.next();
+        //this.dtTrigger.next();
         setTimeout(() => {
           this.cargando = false;
         }, 2000);
@@ -318,7 +293,7 @@ export class ImproversComponent implements OnInit, AfterViewInit {
   ngOnDestroy(): void {
     //Called once, before the instance is destroyed.
     //Add 'implements OnDestroy' to the class.
-    this.dtTrigger.unsubscribe();
+    
     // this.exportReporte().finally()
   }
 
@@ -337,7 +312,7 @@ export class ImproversComponent implements OnInit, AfterViewInit {
     const httpOptions = {
       headers: new HttpHeaders({
         'Content-Type':  'application/json',
-        'Authorization': 'Basic ' + btoa('9aa31c2d0d5d07a9ff66af0b2be1e969:f59fe5f034ce4cac5ebc6aebe9d3aad2')
+        'Authorization': 'Basic ' + btoa('9aa31c2d0d5d07a9ff66af0b2be1e969:ce081d6d5457e766381d8ba6ca09d468')
       })
     }
     return this.http.get(url, httpOptions);

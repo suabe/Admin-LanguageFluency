@@ -47,4 +47,7 @@ export class SpeakersService {
   getPayments(id: string) {
     return this.afstore.collection('pagos', ref => ref.where('uid','==', id)).snapshotChanges();
   }
+  getIncidents(id: string) {
+    return this.afstore.collection('support', ref => ref.where('from','==',id)).snapshotChanges();
+  }
 }
