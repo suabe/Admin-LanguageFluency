@@ -7,6 +7,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import Handsontable from 'handsontable/base';
 import { HandsontableCellType } from 'handsontable/cellTypes';
 import {starsRenderer} from './rendere.model';
+import { HandsontableEditor } from 'handsontable/editors';
 
 
 @Component({
@@ -32,7 +33,10 @@ export class ImproversComponent implements OnInit {
   /**
    * Config-Tabla
   */
- 
+   hotInstance: Handsontable;
+   public onAfterInit = (hotInstance) => {
+    this.hotInstance = hotInstance;
+  }
    renderClass = starsRenderer
    hiddenColumns = {
      indicators: true
@@ -72,42 +76,20 @@ export class ImproversComponent implements OnInit {
 
 
   async exportReporte() {
-    await this.fbstore.collection('plans', ref => ref.where('status', '==', 'active').orderBy('uid')).snapshotChanges()
-    .subscribe(async data => {
-      const planes = data.map( result => {
-          return {
-            planId: result.payload.doc.id,
-            plan: (result.payload.doc.data()['price'] == 'price_1IiLcPFjLGC5FmHqDAZZskyw') ? 'Fluency 10/3' : '+ Fluency',
-            uid: result.payload.doc.data()['uid'],
-            idioma: result.payload.doc.data()['idioma'],
-            creado: new Date(result.payload.doc.data()['creada']*1000)
-          }
-
-      } )
-      for (let index = 0; index < planes.length; index++) {
-        await this.fbstore.collection('perfiles').doc(planes[index]['uid']).snapshotChanges()
-        .subscribe(usuario => {
-          let today: any = new Date();
-          let birthDate = new Date(new Date((usuario.payload.data()['birthDate'] === undefined) ? usuario.payload.data()['birthDtate'] : usuario.payload.data()['birthDate']).toLocaleString('en-US'));
-          let birthday = +birthDate;
-          birthday = ~~((today - birthday) / (31557600000));
-          let bday = new Date(birthDate).toLocaleDateString();
-          planes[index]['LFID'] = usuario.payload.data()['LFId'];
-          planes[index]['Nombre'] = usuario.payload.data()['name'];
-          planes[index]['Apellidos'] = usuario.payload.data()['lastName'];
-          planes[index]['Email'] = usuario.payload.data()['email'];
-          planes[index]['Genero'] = usuario.payload.data()['gender'];
-          planes[index]['Pais'] = usuario.payload.data()['country'];
-          planes[index]['Telefono'] = usuario.payload.data()['phone'];
-          planes[index]['FechaNacimiento'] = bday;
-          planes[index]['Estatus'] = usuario.payload.data()['status'];
-          planes[index]['Registrado'] = new Date(usuario.payload.data()['creado']).toLocaleDateString('en-Us');          
-        })
-        
-      }
-      await this.excelService.exportAsExcelFile(planes,'General Improvers')
-      
-    })
+    let hot = this.hotInstance;
+    let exportPlugin1 = hot.getPlugin('exportFile');
+    exportPlugin1.downloadFile('csv', {
+      bom: false,
+      columnDelimiter: ',',
+      columnHeaders: true,
+      exportHiddenColumns: true,
+      exportHiddenRows: true,
+      fileExtension: 'csv',
+      filenme: 'Reporte-Improvers_[YYYY]-[MM]-[DD]',
+      mimeType: 'text/csv',
+      rowDelimiter: '\r\n',
+      rowHeaders: true
+    });
   }
 
   async getClientes() {
@@ -146,6 +128,7 @@ export class ImproversComponent implements OnInit {
             userBio: result.payload.doc.data()['bio'],
             userStatus: toTitleCase(result.payload.doc.data()['status']),
             userOption: '<a href="/improver/'+result.payload.doc.id+'">Ver</a>',
+            userControl: (result.payload.doc.data()['status'] == 'active')&& '<button (click)="changeStatus("suspended",'+ result.payload.doc.id +')" type="button" class="btn btn-sm btn-success mt-1"><i class="fas fa-check"></i> Suspender</button>',
             userCreatedAt: new Date(result.payload.doc.data()['creado']).toLocaleDateString('en-Us'),
             plans: {},
             totalCalls: 0,
@@ -296,26 +279,4 @@ export class ImproversComponent implements OnInit {
     
     // this.exportReporte().finally()
   }
-
-  selectMonths(event){
-    let monthDate = event.target.value;
-    this.selectMonth = (new Date(monthDate).getMonth() + 1);
-    this.selectYear = new Date(monthDate).getFullYear();
-    //console.log(this.selectMonth, this.selectYear);
-
-    this.getClientes()
-  }
-
-  getInfoTwilio(uri){
-    var url = 'https://api.twilio.com/2010-04-01/Accounts/9aa31c2d0d5d07a9ff66af0b2be1e969/Calls/'+uri+'.json';
-
-    const httpOptions = {
-      headers: new HttpHeaders({
-        'Content-Type':  'application/json',
-        'Authorization': 'Basic ' + btoa('9aa31c2d0d5d07a9ff66af0b2be1e969:ce081d6d5457e766381d8ba6ca09d468')
-      })
-    }
-    return this.http.get(url, httpOptions);
-  }
-
 }
